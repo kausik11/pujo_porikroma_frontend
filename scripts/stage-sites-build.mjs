@@ -1,5 +1,13 @@
 import { execFileSync } from "node:child_process";
-import { access, cp, mkdir, readFile, rm, writeFile } from "node:fs/promises";
+import {
+  access,
+  cp,
+  mkdir,
+  readFile,
+  rename,
+  rm,
+  writeFile,
+} from "node:fs/promises";
 import path from "node:path";
 
 const projectRoot = path.resolve(process.cwd());
@@ -41,8 +49,8 @@ execFileSync(
     "deploy",
     workerSource,
     "--dry-run",
-    "--outfile",
-    workerOutput,
+    "--outdir",
+    serverRoot,
     "--minify",
     "--compatibility-date",
     "2026-08-18",
@@ -50,10 +58,19 @@ execFileSync(
     "nodejs_compat",
     "--compatibility-flags",
     "global_fetch_strictly_public",
-    "--assets",
-    assetsSource,
   ],
   { cwd: projectRoot, stdio: "inherit" },
+);
+
+await rename(path.join(serverRoot, "worker.js"), workerOutput);
+await rm(path.join(serverRoot, "worker.js.map"), { force: true });
+await rm(path.join(serverRoot, "README.md"), { force: true });
+
+const workerBundle = await readFile(workerOutput, "utf8");
+
+await writeFile(
+  workerOutput,
+  workerBundle.replace(/\n?\/\/# sourceMappingURL=worker\.js\.map\s*$/, "\n"),
 );
 
 await access(workerOutput);
