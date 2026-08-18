@@ -25,6 +25,23 @@
   font-family: var(--font-bengali-sans), sans-serif;
 }
 
+.skipLink {
+  position: fixed;
+  top: 12px;
+  left: 12px;
+  z-index: 100;
+  padding: 10px 15px;
+  color: white !important;
+  background: #171612;
+  border-radius: 7px;
+  transform: translateY(-180%);
+  transition: transform 150ms ease;
+}
+
+.skipLink:focus {
+  transform: translateY(0);
+}
+
 .container {
   width: min(100% - 48px, 1230px);
   margin-inline: auto;
@@ -372,6 +389,7 @@
 
 .pujaCard {
   position: relative;
+  display: block;
   height: 494px;
   overflow: hidden;
   color: white;
@@ -1061,7 +1079,8 @@
 }
 
 .footerLinks a,
-.footerTeam > a {
+.footerTeam > a,
+.footerSocial {
   color: #e3ded4;
   font-size: 18px;
 }
@@ -1073,7 +1092,7 @@
   color: #ffd773;
 }
 
-.footerTeam > a:nth-of-type(n + 2) {
+.footerSocial {
   display: grid;
   grid-template-columns: 25px 1fr 18px;
   align-items: center;
@@ -1083,13 +1102,13 @@
   border-bottom: 1px solid rgb(255 255 255 / 27%);
 }
 
-.footerTeam > a span {
+.footerSocial > span {
   font-size: 25px;
   font-weight: 700;
   text-align: center;
 }
 
-.footerTeam > a svg {
+.footerSocial svg {
   width: 17px;
   height: 17px;
 }

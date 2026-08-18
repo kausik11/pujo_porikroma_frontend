@@ -14,7 +14,7 @@ import {
   UsersRound,
   X,
 } from "lucide-react";
-import { type FormEvent, useState } from "react";
+import { type FormEvent, useEffect, useRef, useState } from "react";
 import styles from "@/app/pujaway.module.css";
 
 type Region = "South" | "North" | "Central";
@@ -187,7 +187,11 @@ function Brand({ inverse = false }: { inverse?: boolean }) {
 
 function PujaCard({ puja }: { puja: Puja }) {
   return (
-    <article className={styles.pujaCard}>
+    <Link
+      href={`/locations?search=${encodeURIComponent(puja.name)}`}
+      className={styles.pujaCard}
+      aria-label={`Explore ${puja.name} in ${puja.location}`}
+    >
       <Image
         src={puja.image}
         alt={`${puja.name} Durga Puja pandal`}
@@ -204,7 +208,7 @@ function PujaCard({ puja }: { puja: Puja }) {
           <span>{puja.location}</span>
         </p>
       </div>
-    </article>
+    </Link>
   );
 }
 
@@ -257,17 +261,54 @@ export function PujaWayHome() {
   const [region, setRegion] = useState<Region>("South");
   const [menuOpen, setMenuOpen] = useState(false);
   const [messageSent, setMessageSent] = useState(false);
+  const menuButtonRef = useRef<HTMLButtonElement>(null);
+  const mobileMenuRef = useRef<HTMLDivElement>(null);
 
   const visiblePujas = pujas.filter((puja) => puja.region === region);
 
+  useEffect(() => {
+    if (!menuOpen) return;
+
+    mobileMenuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
+
+    function closeMenu(event: KeyboardEvent) {
+      if (event.key !== "Escape") return;
+      setMenuOpen(false);
+      menuButtonRef.current?.focus();
+    }
+
+    function closeOnOutsidePress(event: PointerEvent) {
+      const target = event.target;
+      if (!(target instanceof Node)) return;
+      if (mobileMenuRef.current?.contains(target) || menuButtonRef.current?.contains(target)) return;
+      setMenuOpen(false);
+    }
+
+    document.addEventListener("keydown", closeMenu);
+    document.addEventListener("pointerdown", closeOnOutsidePress);
+    return () => {
+      document.removeEventListener("keydown", closeMenu);
+      document.removeEventListener("pointerdown", closeOnOutsidePress);
+    };
+  }, [menuOpen]);
+
   function handleMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    event.currentTarget.reset();
+    const formData = new FormData(event.currentTarget);
+    const name = String(formData.get("name") ?? "");
+    const email = String(formData.get("email") ?? "");
+    const message = String(formData.get("message") ?? "");
+    const subject = encodeURIComponent(`PujaWay enquiry from ${name}`);
+    const body = encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\n${message}`);
+    window.location.href = `mailto:infocodefair@gmail.com?subject=${subject}&body=${body}`;
     setMessageSent(true);
   }
 
   return (
     <div className={styles.page}>
+      <a className={styles.skipLink} href="#main-content">
+        Skip to main content
+      </a>
       <header className={styles.header}>
         <nav className={styles.nav} aria-label="Main navigation">
           <Link href="/" aria-label="PujaWay home">
@@ -286,6 +327,7 @@ export function PujaWayHome() {
             <SlidersHorizontal aria-hidden="true" />
             <input
               name="search"
+              lang="bn"
               aria-label="Search pujas, areas or food"
               placeholder="পুজো, এলাকা বা ক্লাব খুঁজুন"
             />
@@ -295,6 +337,7 @@ export function PujaWayHome() {
           </form>
 
           <button
+            ref={menuButtonRef}
             className={styles.menuButton}
             type="button"
             aria-label={menuOpen ? "Close menu" : "Open menu"}
@@ -306,7 +349,7 @@ export function PujaWayHome() {
           </button>
 
           {menuOpen ? (
-            <div className={styles.mobileMenu} id="mobile-menu">
+            <div ref={mobileMenuRef} className={styles.mobileMenu} id="mobile-menu">
               {navItems.map((item) => (
                 <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
                   {item.label}
@@ -324,7 +367,7 @@ export function PujaWayHome() {
         </nav>
       </header>
 
-      <main>
+      <main id="main-content" tabIndex={-1}>
         <section className={styles.hero} aria-labelledby="hero-title">
           <Image
             src="/images/pujaway/banner-durga.jpg"
@@ -515,7 +558,7 @@ export function PujaWayHome() {
                 </label>
                 <button type="submit">SEND</button>
                 <p className={styles.formStatus} aria-live="polite">
-                  {messageSent ? "Thank you — your message is ready for the PujaWay team." : ""}
+                  {messageSent ? "Your email app should open so you can review and send the message." : ""}
                 </p>
               </form>
             </div>
@@ -547,12 +590,12 @@ export function PujaWayHome() {
             <a href="https://codefair.in" target="_blank" rel="noreferrer">
               Codefair.in
             </a>
-            <a href="#" aria-label="PujaWay on Facebook">
+            <span className={styles.footerSocial} aria-label="Facebook profile coming soon">
               <span>f</span> Facebook <ArrowRight aria-hidden="true" />
-            </a>
-            <a href="#" aria-label="PujaWay on Instagram">
+            </span>
+            <span className={styles.footerSocial} aria-label="Instagram profile coming soon">
               <span>◎</span> Instagram <ArrowRight aria-hidden="true" />
-            </a>
+            </span>
           </div>
         </div>
         <p className={styles.footerWatermark} aria-hidden="true">PujaWay</p>

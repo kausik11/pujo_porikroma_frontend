@@ -1,6 +1,7 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { Suspense, useMemo, useState } from "react";
+import { useSearchParams } from "next/navigation";
 import { useQuery } from "@tanstack/react-query";
 import { OfficeCard } from "@/components/OfficeCard";
 import { Shell } from "@/components/Shell";
@@ -9,9 +10,10 @@ import { api } from "@/services/api";
 
 const regions = ["ALL", "NORTH", "SOUTH", "EAST", "WEST", "CENTRAL"] as const;
 
-export default function LocationsPage() {
+function LocationsContent() {
+  const searchParams = useSearchParams();
   const [region, setRegion] = useState<(typeof regions)[number]>("ALL");
-  const [search, setSearch] = useState("");
+  const [search, setSearch] = useState(searchParams.get("search") ?? "");
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const query = useMemo(() => {
@@ -47,5 +49,19 @@ export default function LocationsPage() {
       {data.length > 0 && <div className="mb-6"><DynamicOfficeMap offices={data} /></div>}
       <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">{data.map((office) => <OfficeCard key={office._id} office={office} />)}</div>
     </Shell>
+  );
+}
+
+export default function LocationsPage() {
+  return (
+    <Suspense
+      fallback={
+        <Shell>
+          <p className="rounded-lg bg-white p-4">Loading locations...</p>
+        </Shell>
+      }
+    >
+      <LocationsContent />
+    </Suspense>
   );
 }
