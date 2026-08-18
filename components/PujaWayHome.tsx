@@ -369,14 +369,18 @@ export function PujaWayHome() {
 
       <main id="main-content" tabIndex={-1}>
         <section className={styles.hero} aria-labelledby="hero-title">
-          <Image
-            src="/images/pujaway/banner-durga.jpg"
-            alt="Durga idol surrounded by warm festival lights"
-            fill
-            preload
-            sizes="100vw"
-            className={styles.heroImage}
-          />
+          <video
+            className={styles.heroVideo}
+            poster="/images/pujaway/banner-durga.jpg"
+            autoPlay
+            muted
+            loop
+            playsInline
+            preload="metadata"
+            aria-hidden="true"
+          >
+            <source src="/video/pujo%20way%20hero%20vd.mp4" type="video/mp4" />
+          </video>
           <div className={styles.heroOverlay} />
           <div className={styles.heroContent}>
             <p className={styles.heroEyebrow} lang="bn">
@@ -479,6 +483,29 @@ export function PujaWayHome() {
                 value="128"
                 suffix="Restaurants"
               />
+            </div>
+          </div>
+        </section>
+
+        <section className={styles.introVideoSection} aria-labelledby="intro-video-title">
+          <div className={styles.container}>
+            <div className={styles.introVideoHeader}>
+              <p className={styles.sectionLabel}>PujaWay Preview</p>
+              <h2 id="intro-video-title" lang="bn">
+                পুজো পরিক্রমা শুরু করার আগে এক ঝলক দেখে নিন
+              </h2>
+            </div>
+            <div className={styles.introVideoFrame}>
+              <video
+                className={styles.introVideo}
+                controls
+                muted
+                playsInline
+                preload="metadata"
+                poster="/images/pujaway/banner-durga.jpg"
+              >
+                <source src="/video/pujo%20way%20intro%20vd.mp4" type="video/mp4" />
+              </video>
             </div>
           </div>
         </section>

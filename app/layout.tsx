@@ -4,6 +4,7 @@ import { QueryProvider } from "@/components/QueryProvider";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
 import "@photo-sphere-viewer/core/index.css";
+import "@photo-sphere-viewer/virtual-tour-plugin/index.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

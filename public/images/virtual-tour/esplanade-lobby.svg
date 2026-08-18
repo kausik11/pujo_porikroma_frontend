@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2400 1200" role="img" aria-label="Dummy 360 panorama lobby">
+  <defs>
+    <linearGradient id="room" x1="0" x2="1">
+      <stop offset="0" stop-color="#7f1d1d"/>
+      <stop offset="0.18" stop-color="#fef3c7"/>
+      <stop offset="0.5" stop-color="#fff7ed"/>
+      <stop offset="0.82" stop-color="#fef3c7"/>
+      <stop offset="1" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <radialGradient id="floor" cx="0.5" cy="0.1" r="0.9">
+      <stop offset="0" stop-color="#f8fafc"/>
+      <stop offset="1" stop-color="#64748b"/>
+    </radialGradient>
+  </defs>
+  <rect width="2400" height="1200" fill="url(#room)"/>
+  <rect y="760" width="2400" height="440" fill="url(#floor)"/>
+  <path d="M0 760h2400M1200 760v440M760 1200l330-440M1640 1200l-330-440" stroke="#334155" stroke-width="8" opacity="0.55"/>
+  <rect x="980" y="280" width="440" height="480" rx="18" fill="#1e293b"/>
+  <rect x="1030" y="335" width="340" height="425" fill="#334155"/>
+  <circle cx="1340" cy="560" r="18" fill="#facc15"/>
+  <rect x="540" y="430" width="250" height="145" rx="12" fill="#0f766e"/>
+  <text x="665" y="518" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#ecfeff">INFO</text>
+  <rect x="1620" y="430" width="250" height="145" rx="12" fill="#0f766e"/>
+  <text x="1745" y="518" text-anchor="middle" font-family="Arial, sans-serif" font-size="40" font-weight="700" fill="#ecfeff">EXIT</text>
+  <text x="1200" y="112" text-anchor="middle" font-family="Arial, sans-serif" font-size="44" fill="#0f172a">Dummy 2:1 equirectangular panorama - office lobby</text>
+</svg>

@@ -1,0 +1,100 @@
+{
+  "source": "https://cdn.thepuja.app/2025/arjunv2/index.html",
+  "scenes": [
+    {
+      "id": "pano31",
+      "slug": "step1-drone",
+      "title": "Drone View",
+      "folder": "step1_drone_31",
+      "links": [
+        {
+          "nodeId": "pano30",
+          "yaw": -0.85,
+          "pitch": -0.12
+        },
+        {
+          "nodeId": "pano29",
+          "yaw": 0.25,
+          "pitch": -0.08
+        }
+      ],
+      "panorama": "/images/virtual-tour/thepuja-arjunpur/step1-drone.jpg",
+      "thumbnail": "/images/virtual-tour/thepuja-arjunpur/step1-drone-thumb.jpg"
+    },
+    {
+      "id": "pano30",
+      "slug": "step1",
+      "title": "Entry Path",
+      "folder": "step1_30",
+      "links": [
+        {
+          "nodeId": "pano31",
+          "yaw": 3.05,
+          "pitch": -0.1
+        },
+        {
+          "nodeId": "pano29",
+          "yaw": 0.2,
+          "pitch": -0.1
+        }
+      ],
+      "panorama": "/images/virtual-tour/thepuja-arjunpur/step1.jpg",
+      "thumbnail": "/images/virtual-tour/thepuja-arjunpur/step1-thumb.jpg"
+    },
+    {
+      "id": "pano29",
+      "slug": "step3",
+      "title": "Pandal Approach",
+      "folder": "step_3_29",
+      "links": [
+        {
+          "nodeId": "pano30",
+          "yaw": 3.1,
+          "pitch": -0.1
+        },
+        {
+          "nodeId": "pano28",
+          "yaw": 0.1,
+          "pitch": -0.1
+        }
+      ],
+      "panorama": "/images/virtual-tour/thepuja-arjunpur/step3.jpg",
+      "thumbnail": "/images/virtual-tour/thepuja-arjunpur/step3-thumb.jpg"
+    },
+    {
+      "id": "pano28",
+      "slug": "step2",
+      "title": "Inner Path",
+      "folder": "step_2_28",
+      "links": [
+        {
+          "nodeId": "pano29",
+          "yaw": 3,
+          "pitch": -0.1
+        },
+        {
+          "nodeId": "pano32",
+          "yaw": 0.05,
+          "pitch": -0.1
+        }
+      ],
+      "panorama": "/images/virtual-tour/thepuja-arjunpur/step2.jpg",
+      "thumbnail": "/images/virtual-tour/thepuja-arjunpur/step2-thumb.jpg"
+    },
+    {
+      "id": "pano32",
+      "slug": "step4",
+      "title": "Idol Entrance",
+      "folder": "step4_32",
+      "links": [
+        {
+          "nodeId": "pano28",
+          "yaw": 3.1,
+          "pitch": -0.1
+        }
+      ],
+      "panorama": "/images/virtual-tour/thepuja-arjunpur/step4.jpg",
+      "thumbnail": "/images/virtual-tour/thepuja-arjunpur/step4-thumb.jpg"
+    }
+  ]
+}

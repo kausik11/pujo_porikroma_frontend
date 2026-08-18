@@ -6,6 +6,22 @@ export type MediaAsset = {
   alt?: string;
 };
 
+export type VirtualTourLink = {
+  nodeId: string;
+  yaw: number;
+  pitch?: number;
+};
+
+export type VirtualTourNode = {
+  id: string;
+  name: string;
+  caption?: string;
+  description?: string;
+  panorama: MediaAsset;
+  thumbnail?: string;
+  links: VirtualTourLink[];
+};
+
 export type Location = {
   _id: string;
   title: string;
@@ -27,6 +43,10 @@ export type Location = {
   openingHours?: string;
   photos: MediaAsset[];
   panorama360?: MediaAsset;
+  virtualTour?: {
+    startNodeId?: string;
+    nodes: VirtualTourNode[];
+  };
   active: boolean;
   distanceMeters?: number;
 };

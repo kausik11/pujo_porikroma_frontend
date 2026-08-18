@@ -7,6 +7,7 @@ import { Clock, Mail, Navigation, Phone } from "lucide-react";
 import { DynamicPanorama } from "@/components/DynamicPanorama";
 import { Shell } from "@/components/Shell";
 import { DynamicOfficeMap } from "@/components/maps/DynamicOfficeMap";
+import { virtualTourForLocation } from "@/data/dummyVirtualTours";
 import { api } from "@/services/api";
 import { coordinatesOf, directionsUrl } from "@/utils/maps";
 
@@ -18,7 +19,9 @@ export default function LocationDetailsPage({ params }: { params: Promise<{ slug
     <Shell>
       {isLoading && <p className="rounded-lg bg-white p-4">Loading office...</p>}
       {error && <p className="rounded-lg bg-red-50 p-4 text-red-700">{(error as Error).message}</p>}
-      {office && (
+      {office && (() => {
+        const virtualTour = virtualTourForLocation(office);
+        return (
         <div className="space-y-8">
           <section>
             <h1 className="text-3xl font-semibold text-slate-950">{office.title}</h1>
@@ -49,14 +52,15 @@ export default function LocationDetailsPage({ params }: { params: Promise<{ slug
             </div>
           </section>
           <DynamicOfficeMap offices={[office]} center={coordinatesOf(office)} />
-          {office.panorama360 && (
+          {(virtualTour?.nodes.length || office.panorama360) && (
             <section>
               <h2 className="mb-3 text-2xl font-semibold text-slate-950">Explore This Office</h2>
-              <DynamicPanorama src={office.panorama360.url} />
+              <DynamicPanorama src={office.panorama360?.url} tour={virtualTour} />
             </section>
           )}
         </div>
-      )}
+        );
+      })()}
     </Shell>
   );
 }

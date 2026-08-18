@@ -31,3 +31,26 @@ textarea {
   width: 100%;
   border-radius: 8px;
 }
+
+.puja-tour-hotspot .psv-virtual-tour-arrow {
+  background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.95) 0 24%, rgba(15, 23, 42, 0.82) 26% 45%, rgba(251, 191, 36, 0.18) 47% 100%);
+  border: 2px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.5), 0 12px 32px rgba(0, 0, 0, 0.36);
+  animation: puja-tour-pulse 1.8s ease-out infinite;
+}
+
+.puja-tour-hide-hotspots .psv-virtual-tour-arrows {
+  display: none;
+}
+
+@keyframes puja-tour-pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0.55), 0 12px 32px rgba(0, 0, 0, 0.36);
+  }
+  80% {
+    box-shadow: 0 0 0 18px rgba(251, 191, 36, 0), 0 12px 32px rgba(0, 0, 0, 0.36);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(251, 191, 36, 0), 0 12px 32px rgba(0, 0, 0, 0.36);
+  }
+}
