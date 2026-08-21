@@ -6,7 +6,7 @@
   --gold: #f4ce69;
   --red: #d51018;
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
   background: var(--cream);
   color: var(--ink);
   font-family: var(--font-geist-sans), Arial, sans-serif;
@@ -60,9 +60,12 @@
 }
 
 .header {
-  position: relative;
+  position: sticky;
+  top: 0;
   z-index: 50;
   background: #fff4d9;
+  border-bottom: 1px solid rgb(23 22 18 / 10%);
+  box-shadow: 0 8px 28px rgb(23 22 18 / 7%);
 }
 
 .header a {

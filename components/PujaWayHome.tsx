@@ -257,8 +257,9 @@ export function PujaWayHome({
             <div className={styles.introVideoFrame}>
               <video
                 className={styles.introVideo}
-                controls
+                autoPlay
                 muted
+                loop
                 playsInline
                 preload="metadata"
                 poster="/images/pujaway/banner-durga.jpg"

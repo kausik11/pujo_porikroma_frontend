@@ -120,7 +120,8 @@ export default async function PujaDetailsPage({ params }: Props) {
   if (!puja || !puja.active) notFound();
 
   const relatedPujas = await getRelatedPujas(puja);
-  const virtualTour = virtualTourForLocation(puja);
+  const uploadedPanorama = puja.panorama360;
+  const virtualTour = uploadedPanorama ? undefined : virtualTourForLocation(puja);
   const canonicalUrl = absoluteUrl(`/locations/${puja.slug}`);
   const [lng, lat] = puja.location.coordinates;
   const details = detailsFor(puja);
@@ -185,6 +186,14 @@ export default async function PujaDetailsPage({ params }: Props) {
           </section>
 
           <section className={`${styles.container} ${styles.contentGrid}`} aria-label="Puja information and directions">
+            {virtualTour?.nodes.length || uploadedPanorama ? (
+              <section className={`${styles.darkPanel} ${styles.immersive} ${styles.aboutImmersive}`}>
+                <h2 className={styles.panelTitle}>Explore in 360°</h2>
+                <p className={styles.immersiveLead}>Step inside the Puja route and move between available panorama viewpoints.</p>
+                <DynamicPanorama src={uploadedPanorama?.url} tour={virtualTour} />
+              </section>
+            ) : null}
+
             <div className={styles.leftColumn}>
               <article className={`${styles.darkPanel} ${styles.about}`}>
                 <h2 className={styles.panelTitle}>About This Puja</h2>
@@ -238,13 +247,6 @@ export default async function PujaDetailsPage({ params }: Props) {
           )}
         </section>
 
-        {virtualTour?.nodes.length || puja.panorama360 ? (
-          <section className={`${styles.container} ${styles.darkPanel} ${styles.immersive}`}>
-            <h2 className={styles.panelTitle}>Explore in 360°</h2>
-            <p className={styles.immersiveLead}>Step inside the Puja route and move between available panorama viewpoints.</p>
-            <DynamicPanorama src={puja.panorama360?.url} tour={virtualTour} />
-          </section>
-        ) : null}
       </main>
     </div>
   );
