@@ -164,7 +164,7 @@ export function LocationForm({ location }: { location?: Location }) {
         <div className="mt-4 grid gap-4 md:grid-cols-2">
           <label className="flex min-h-11 items-center gap-2 text-sm font-medium text-slate-800">
             <input type="checkbox" checked={form.featured ?? false} onChange={(event) => update("featured", event.target.checked)} />
-            Feature on the homepage
+            Publish on the homepage and in Puja Trails
           </label>
           <label className="flex min-h-11 items-center gap-2 text-sm font-medium text-slate-800">
             <input type="checkbox" checked={form.verified ?? false} onChange={(event) => update("verified", event.target.checked)} />

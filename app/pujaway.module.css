@@ -133,7 +133,8 @@
 }
 
 .navLinks a:hover::after,
-.navLinks a:focus-visible::after {
+.navLinks a:focus-visible::after,
+.navLinks a.activeNavLink::after {
   transform: scaleX(1);
   transform-origin: left;
 }

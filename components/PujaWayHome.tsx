@@ -135,7 +135,7 @@ export function PujaWayHome({
               <Link href="/locations/near-me" lang="bn">
                 আমার কাছাকাছি পুজো দেখুন
               </Link>
-              <Link href="/multi-office-route" lang="bn">
+              <Link href="/route-planner" lang="bn">
                 আমার প্ল্যান তৈরি করুন
               </Link>
             </div>
