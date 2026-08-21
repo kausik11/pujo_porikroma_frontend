@@ -10,7 +10,7 @@ import {
   Utensils,
   UsersRound,
 } from "lucide-react";
-import { type FormEvent, useState, useTransition } from "react";
+import { type FormEvent, useEffect, useState, useTransition } from "react";
 import styles from "@/app/pujaway.module.css";
 import { PujaCard, type PujaCardData } from "@/components/pujaway/PujaCard";
 import { PujaWayBrand } from "@/components/pujaway/PujaWayBrand";
@@ -75,6 +75,31 @@ function LiveCard({
   );
 }
 
+function FlashScreen() {
+  return (
+    <div className={styles.flashScreen} data-pujaway-flash-screen aria-hidden="true">
+      <Image
+        src="/images/Flash_screen_kalka.jpg"
+        alt=""
+        fill
+        sizes="(max-width: 720px) 100vw, 680px"
+        priority
+        className={styles.flashKalka}
+      />
+      <div className={styles.flashBrand}>
+        <Image
+          src="/images/logo%20black%20pujaway.png"
+          alt="PujaWay - Your Guide To Puja Hopping"
+          width={1468}
+          height={722}
+          priority
+          className={styles.flashLogo}
+        />
+      </div>
+    </div>
+  );
+}
+
 export function PujaWayHome({
   featuredPujas,
   featuredLoadFailed = false,
@@ -82,8 +107,28 @@ export function PujaWayHome({
   const router = useRouter();
   const [region, setRegion] = useState<FeaturedRegion>("SOUTH");
   const [messageSent, setMessageSent] = useState(false);
+  const [showFlashScreen, setShowFlashScreen] = useState(true);
   const [isRefreshingFeatured, startFeaturedRefresh] = useTransition();
   const visiblePujas = featuredPujas.filter((puja) => puja.region === region);
+
+  useEffect(() => {
+    const previousBodyOverflow = document.body.style.overflow;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.documentElement.style.overflow = "hidden";
+
+    const timer = window.setTimeout(() => {
+      setShowFlashScreen(false);
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    }, 3600);
+
+    return () => {
+      window.clearTimeout(timer);
+      document.body.style.overflow = previousBodyOverflow;
+      document.documentElement.style.overflow = previousHtmlOverflow;
+    };
+  }, []);
 
   function retryFeaturedPujas() {
     startFeaturedRefresh(() => router.refresh());
@@ -103,6 +148,7 @@ export function PujaWayHome({
 
   return (
     <div className={styles.page}>
+      {showFlashScreen ? <FlashScreen /> : null}
       <PujaWayHeader />
 
       <main id="main-content" tabIndex={-1}>

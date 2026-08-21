@@ -21,6 +21,59 @@
   text-decoration: none;
 }
 
+:global(html:has([data-pujaway-flash-screen])),
+:global(body:has([data-pujaway-flash-screen])) {
+  overflow: hidden;
+}
+
+.flashScreen {
+  position: fixed;
+  z-index: 2147483000;
+  display: grid;
+  width: 100vw;
+  height: 100dvh;
+  overflow: hidden;
+  color: #beb7a8;
+  pointer-events: none;
+  background: #fff9ed;
+  inset: 0;
+  place-items: center;
+  animation: flashScreenExit 3.6s cubic-bezier(0.5, 0, 0.2, 1) forwards;
+}
+
+.flashKalka {
+  width: min(88vw, 820px) !important;
+  height: min(88vw, 820px) !important;
+  inset: 50% auto auto 50% !important;
+  object-fit: contain;
+  z-index: 1;
+  mix-blend-mode: multiply;
+  opacity: 0.46;
+  filter: saturate(0.92) sepia(0.08) brightness(1.01) contrast(1.04);
+  transform: translate(-50%, -50%);
+  transform-origin: center;
+  mask-image: radial-gradient(circle, #000 0 58%, rgb(0 0 0 / 72%) 70%, transparent 84%);
+  -webkit-mask-image: radial-gradient(circle, #000 0 58%, rgb(0 0 0 / 72%) 70%, transparent 84%);
+}
+
+.flashBrand {
+  position: relative;
+  z-index: 2;
+  width: min(70vw, 680px);
+  opacity: 0;
+  transform: translate3d(0, -56vh, 0);
+  will-change: transform, opacity;
+  animation:
+    flashBrandDrop 4.2s cubic-bezier(0.16, 0.86, 0.22, 1) forwards,
+    flashBrandFade 4.2s ease-in-out forwards;
+}
+
+.flashLogo {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .page [lang="bn"] {
   font-family: var(--font-bengali-sans), sans-serif;
 }
@@ -1269,6 +1322,73 @@
   user-select: none;
 }
 
+@keyframes flashKalkaBloom {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.54) rotate(-26deg);
+  }
+
+  28% {
+    opacity: 0.34;
+  }
+
+  54% {
+    opacity: 0.46;
+    transform: translate(-50%, -50%) scale(0.72) rotate(-9deg);
+  }
+
+  78% {
+    opacity: 0.38;
+    transform: translate(-50%, -50%) scale(0.78) rotate(0deg);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.83) rotate(0deg);
+  }
+}
+
+@keyframes flashBrandFade {
+  0% {
+    opacity: 0;
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flashBrandDrop {
+  0% {
+    transform: translate3d(0, -56vh, 0);
+  }
+
+  70%,
+  100% {
+    transform: translate3d(0, -10vh, 0);
+  }
+}
+
+@keyframes flashScreenExit {
+  0%,
+  82% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @media (max-width: 1120px) {
   .navLinks {
     gap: 24px;
@@ -1433,6 +1553,15 @@
   .nav,
   .heroContent {
     width: min(100% - 36px, 1230px);
+  }
+
+  .flashKalka {
+    width: min(126vw, 640px) !important;
+    height: min(126vw, 640px) !important;
+  }
+
+  .flashBrand {
+    width: min(78vw, 460px);
   }
 
   .brandName {
@@ -1775,5 +1904,12 @@
   .page *::after {
     scroll-behavior: auto !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .flashScreen,
+  .flashKalka,
+  .flashBrand {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
   }
 }
