@@ -1,5 +1,7 @@
 export type Region = "NORTH" | "SOUTH" | "EAST" | "WEST" | "CENTRAL";
 
+export type CrowdLevel = "LOW" | "MODERATE" | "HIGH" | "VERY_HIGH";
+
 export type MediaAsset = {
   url: string;
   publicId: string;
@@ -41,6 +43,23 @@ export type Location = {
   alternatePhone?: string;
   email?: string;
   openingHours?: string;
+  featured?: boolean;
+  verified?: boolean;
+  crowdLevel?: CrowdLevel;
+  crowdUpdatedAt?: string;
+  bestVisitTime?: string;
+  pujaType?: string;
+  establishedYear?: number;
+  themeYear?: number;
+  themeName?: string;
+  idolStyle?: string;
+  pandalTheme?: string;
+  specialAttractions?: string[];
+  nearestMetro?: string;
+  accessibility?: string[];
+  visitTip?: string;
+  ratingAverage?: number;
+  ratingCount?: number;
   photos: MediaAsset[];
   panorama360?: MediaAsset;
   virtualTour?: {

@@ -2,214 +2,33 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import {
   ArrowDown,
   ArrowRight,
   Flame,
   MapPin,
-  Menu,
-  Search,
-  SlidersHorizontal,
   Utensils,
   UsersRound,
-  X,
 } from "lucide-react";
-import { type FormEvent, useEffect, useRef, useState } from "react";
+import { type FormEvent, useState, useTransition } from "react";
 import styles from "@/app/pujaway.module.css";
+import { PujaCard, type PujaCardData } from "@/components/pujaway/PujaCard";
+import { PujaWayBrand } from "@/components/pujaway/PujaWayBrand";
+import { PUJAWAY_NAV_ITEMS, PujaWayHeader } from "@/components/pujaway/PujaWayHeader";
+import type { Region } from "@/types/location";
 
-type Region = "South" | "North" | "Central";
+type FeaturedRegion = Extract<Region, "SOUTH" | "NORTH" | "CENTRAL">;
 
-type Puja = {
-  id: string;
-  name: string;
-  location: string;
-  region: Region;
-  image: string;
-  monochrome?: boolean;
+const featuredRegions: FeaturedRegion[] = ["SOUTH", "NORTH", "CENTRAL"];
+
+export type PujaWayHomeProps = {
+  featuredPujas: PujaCardData[];
+  featuredLoadFailed?: boolean;
 };
 
-const pujas: Puja[] = [
-  {
-    id: "south-ekdalia",
-    name: "Ekdalia Evergreen",
-    location: "Ballygunge",
-    region: "South",
-    image: "/images/pujaway/card-ekdalia.jpg",
-    monochrome: true,
-  },
-  {
-    id: "south-chetla",
-    name: "Shyambazar Sorbojonin",
-    location: "Shyambazar",
-    region: "South",
-    image: "/images/pujaway/card-shyambazar.jpg",
-  },
-  {
-    id: "south-suruchi",
-    name: "Santosh Mitra Square",
-    location: "Shibpur, Bhawanipur",
-    region: "South",
-    image: "/images/pujaway/card-santosh.jpg",
-    monochrome: true,
-  },
-  {
-    id: "south-tridhara",
-    name: "Ekdalia Evergreen",
-    location: "Ballygunge",
-    region: "South",
-    image: "/images/pujaway/card-ekdalia.jpg",
-    monochrome: true,
-  },
-  {
-    id: "south-triangular",
-    name: "Triangular Park",
-    location: "Shibpur, Bhawanipur",
-    region: "South",
-    image: "/images/pujaway/card-shyambazar.jpg",
-    monochrome: true,
-  },
-  {
-    id: "south-mudiali",
-    name: "Santosh Mitra Square",
-    location: "Shibpur, Bhawanipur",
-    region: "South",
-    image: "/images/pujaway/card-santosh.jpg",
-    monochrome: true,
-  },
-  {
-    id: "north-shyambazar",
-    name: "Shyambazar Sarbojanin",
-    location: "Shyambazar",
-    region: "North",
-    image: "/images/pujaway/card-shyambazar.jpg",
-  },
-  {
-    id: "north-kumartuli",
-    name: "Kumartuli Park",
-    location: "Kumartuli",
-    region: "North",
-    image: "/images/pujaway/card-ekdalia.jpg",
-  },
-  {
-    id: "north-tala",
-    name: "Tala Prattoy",
-    location: "Belgachia",
-    region: "North",
-    image: "/images/pujaway/card-santosh.jpg",
-  },
-  {
-    id: "north-ahiritola",
-    name: "Ahiritola Sarbojanin",
-    location: "Ahiritola",
-    region: "North",
-    image: "/images/pujaway/card-ekdalia.jpg",
-    monochrome: true,
-  },
-  {
-    id: "north-baghbazar",
-    name: "Baghbazar Sarbojanin",
-    location: "Baghbazar",
-    region: "North",
-    image: "/images/pujaway/card-shyambazar.jpg",
-    monochrome: true,
-  },
-  {
-    id: "north-hatibagan",
-    name: "Hatibagan Sarbojanin",
-    location: "Hatibagan",
-    region: "North",
-    image: "/images/pujaway/card-santosh.jpg",
-    monochrome: true,
-  },
-  {
-    id: "central-santosh",
-    name: "Santosh Mitra Square",
-    location: "Lebutala",
-    region: "Central",
-    image: "/images/pujaway/card-santosh.jpg",
-  },
-  {
-    id: "central-college",
-    name: "College Square",
-    location: "College Street",
-    region: "Central",
-    image: "/images/pujaway/card-ekdalia.jpg",
-  },
-  {
-    id: "central-mohammed",
-    name: "Mohammed Ali Park",
-    location: "Chittaranjan Avenue",
-    region: "Central",
-    image: "/images/pujaway/card-shyambazar.jpg",
-  },
-  {
-    id: "central-sealdah",
-    name: "Sealdah Athletic Club",
-    location: "Sealdah",
-    region: "Central",
-    image: "/images/pujaway/card-santosh.jpg",
-    monochrome: true,
-  },
-  {
-    id: "central-subodh",
-    name: "Subodh Mullick Square",
-    location: "Wellington",
-    region: "Central",
-    image: "/images/pujaway/card-shyambazar.jpg",
-    monochrome: true,
-  },
-  {
-    id: "central-bowbazar",
-    name: "Bowbazar Sarbojanin",
-    location: "Bowbazar",
-    region: "Central",
-    image: "/images/pujaway/card-ekdalia.jpg",
-    monochrome: true,
-  },
-];
-
-const navItems = [
-  { label: "Explore", href: "#explore" },
-  { label: "Puja Trails", href: "/route-planner" },
-  { label: "Areas", href: "/locations" },
-  { label: "Food", href: "#live" },
-  { label: "Our Story", href: "#story" },
-];
-
-function Brand({ inverse = false }: { inverse?: boolean }) {
-  return (
-    <span className={`${styles.brand} ${inverse ? styles.brandInverse : ""}`}>
-      <span className={styles.brandName}>PujaWay</span>
-      <span className={styles.brandTagline}>Your Guide To Puja Hopping</span>
-    </span>
-  );
-}
-
-function PujaCard({ puja }: { puja: Puja }) {
-  return (
-    <Link
-      href={`/locations?search=${encodeURIComponent(puja.name)}`}
-      className={styles.pujaCard}
-      aria-label={`Explore ${puja.name} in ${puja.location}`}
-    >
-      <Image
-        src={puja.image}
-        alt={`${puja.name} Durga Puja pandal`}
-        fill
-        sizes="(max-width: 720px) 92vw, (max-width: 1100px) 45vw, 390px"
-        className={`${styles.pujaImage} ${puja.monochrome ? styles.monochrome : ""}`}
-      />
-      <span className={styles.regionBadge}>{puja.region}</span>
-      <div className={styles.cardShade} />
-      <div className={styles.pujaCardCopy}>
-        <h3>{puja.name}</h3>
-        <p>
-          <MapPin aria-hidden="true" />
-          <span>{puja.location}</span>
-        </p>
-      </div>
-    </Link>
-  );
+function formatRegion(region: FeaturedRegion) {
+  return region.charAt(0) + region.slice(1).toLowerCase();
 }
 
 function LiveCard({
@@ -233,7 +52,7 @@ function LiveCard({
         <span className={styles.liveIcon}>
           <Icon aria-hidden="true" />
         </span>
-        <span>Live</span>
+        <span>Guide</span>
       </div>
       <h3>{title}</h3>
       <span className={styles.shortRule} />
@@ -257,40 +76,19 @@ function LiveCard({
   );
 }
 
-export function PujaWayHome() {
-  const [region, setRegion] = useState<Region>("South");
-  const [menuOpen, setMenuOpen] = useState(false);
+export function PujaWayHome({
+  featuredPujas,
+  featuredLoadFailed = false,
+}: PujaWayHomeProps) {
+  const router = useRouter();
+  const [region, setRegion] = useState<FeaturedRegion>("SOUTH");
   const [messageSent, setMessageSent] = useState(false);
-  const menuButtonRef = useRef<HTMLButtonElement>(null);
-  const mobileMenuRef = useRef<HTMLDivElement>(null);
+  const [isRefreshingFeatured, startFeaturedRefresh] = useTransition();
+  const visiblePujas = featuredPujas.filter((puja) => puja.region === region);
 
-  const visiblePujas = pujas.filter((puja) => puja.region === region);
-
-  useEffect(() => {
-    if (!menuOpen) return;
-
-    mobileMenuRef.current?.querySelector<HTMLAnchorElement>("a")?.focus();
-
-    function closeMenu(event: KeyboardEvent) {
-      if (event.key !== "Escape") return;
-      setMenuOpen(false);
-      menuButtonRef.current?.focus();
-    }
-
-    function closeOnOutsidePress(event: PointerEvent) {
-      const target = event.target;
-      if (!(target instanceof Node)) return;
-      if (mobileMenuRef.current?.contains(target) || menuButtonRef.current?.contains(target)) return;
-      setMenuOpen(false);
-    }
-
-    document.addEventListener("keydown", closeMenu);
-    document.addEventListener("pointerdown", closeOnOutsidePress);
-    return () => {
-      document.removeEventListener("keydown", closeMenu);
-      document.removeEventListener("pointerdown", closeOnOutsidePress);
-    };
-  }, [menuOpen]);
+  function retryFeaturedPujas() {
+    startFeaturedRefresh(() => router.refresh());
+  }
 
   function handleMessage(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -306,66 +104,7 @@ export function PujaWayHome() {
 
   return (
     <div className={styles.page}>
-      <a className={styles.skipLink} href="#main-content">
-        Skip to main content
-      </a>
-      <header className={styles.header}>
-        <nav className={styles.nav} aria-label="Main navigation">
-          <Link href="/" aria-label="PujaWay home">
-            <Brand />
-          </Link>
-
-          <div className={styles.navLinks}>
-            {navItems.map((item) => (
-              <Link key={item.label} href={item.href}>
-                {item.label}
-              </Link>
-            ))}
-          </div>
-
-          <form className={styles.searchBox} action="/locations" role="search">
-            <SlidersHorizontal aria-hidden="true" />
-            <input
-              name="search"
-              lang="bn"
-              aria-label="Search pujas, areas or food"
-              placeholder="পুজো, এলাকা বা ক্লাব খুঁজুন"
-            />
-            <button type="submit" aria-label="Search">
-              <Search aria-hidden="true" />
-            </button>
-          </form>
-
-          <button
-            ref={menuButtonRef}
-            className={styles.menuButton}
-            type="button"
-            aria-label={menuOpen ? "Close menu" : "Open menu"}
-            aria-expanded={menuOpen}
-            aria-controls="mobile-menu"
-            onClick={() => setMenuOpen((open) => !open)}
-          >
-            {menuOpen ? <X aria-hidden="true" /> : <Menu aria-hidden="true" />}
-          </button>
-
-          {menuOpen ? (
-            <div ref={mobileMenuRef} className={styles.mobileMenu} id="mobile-menu">
-              {navItems.map((item) => (
-                <Link key={item.label} href={item.href} onClick={() => setMenuOpen(false)}>
-                  {item.label}
-                  <ArrowRight aria-hidden="true" />
-                </Link>
-              ))}
-              <form className={styles.mobileSearch} action="/locations" role="search">
-                <input name="search" aria-label="Search PujaWay" placeholder="Search PujaWay" />
-                <button type="submit" aria-label="Search">
-                  <Search aria-hidden="true" />
-                </button>
-              </form>
-            </div>
-          ) : null}
-        </nav>
-      </header>
+      <PujaWayHeader />
 
       <main id="main-content" tabIndex={-1}>
         <section className={styles.hero} aria-labelledby="hero-title">
@@ -413,17 +152,40 @@ export function PujaWayHome() {
               </h2>
               <label className={styles.regionSelect}>
                 <span className={styles.srOnly}>Choose a Kolkata region</span>
-                <select value={region} onChange={(event) => setRegion(event.target.value as Region)}>
-                  <option value="South">South</option>
-                  <option value="North">North</option>
-                  <option value="Central">Central</option>
+                <select
+                  value={region}
+                  onChange={(event) => setRegion(event.target.value as FeaturedRegion)}
+                >
+                  {featuredRegions.map((item) => (
+                    <option key={item} value={item}>
+                      {formatRegion(item)}
+                    </option>
+                  ))}
                 </select>
               </label>
             </div>
 
-            <div className={styles.pujaGrid} aria-live="polite">
+            <div className={styles.pujaGrid} aria-live="polite" aria-busy={isRefreshingFeatured}>
+              {featuredLoadFailed ? (
+                <div className={styles.pujaStatus} role="alert">
+                  <p>We couldn&apos;t load featured pujas from the Puja service.</p>
+                  <button
+                    className={styles.pujaRetry}
+                    type="button"
+                    onClick={retryFeaturedPujas}
+                    disabled={isRefreshingFeatured}
+                  >
+                    {isRefreshingFeatured ? "Trying again…" : "Try again"}
+                  </button>
+                </div>
+              ) : null}
+              {!featuredLoadFailed && visiblePujas.length === 0 ? (
+                <p className={styles.pujaStatus}>
+                  No active featured pujas have been published for this region yet.
+                </p>
+              ) : null}
               {visiblePujas.map((puja) => (
-                <PujaCard key={puja.id} puja={puja} />
+                <PujaCard key={puja.slug} puja={puja} />
               ))}
             </div>
           </div>
@@ -439,7 +201,7 @@ export function PujaWayHome() {
           />
           <div className={styles.bannerVeil} />
           <div className={styles.bannerCopy}>
-            <Brand />
+            <PujaWayBrand />
             <p className={styles.bannerKicker} lang="bn">
               পুজো হোক
             </p>
@@ -458,30 +220,28 @@ export function PujaWayHome() {
         <section className={styles.liveSection} id="live" aria-labelledby="live-title">
           <div className={styles.container}>
             <p className={styles.liveNow}>
-              <span /> LIVE NOW
+              <span /> EDITORIAL GUIDE
             </p>
-            <h2 id="live-title">Live Around Kolkata</h2>
-            <p className={styles.liveLead}>Real time updated from the city of joy</p>
+            <h2 id="live-title">Around Kolkata</h2>
+            <p className={styles.liveLead}>Curated planning highlights; local conditions can change.</p>
             <div className={styles.liveGrid}>
               <LiveCard
                 icon={UsersRound}
-                title="Exploring Now"
-                value="2,870"
-                suffix="People"
-                chart
+                title="Plan Your Visit"
+                value="Explore"
+                suffix="Pujas by area"
               />
               <LiveCard
                 icon={Flame}
-                title="Trending Now"
+                title="Featured Puja"
                 value="Santosh Mitra Square"
-                busy
               />
-              <LiveCard icon={MapPin} title="Most Active Area" value="North Kolkata" busy />
+              <LiveCard icon={MapPin} title="Featured Area" value="North Kolkata" />
               <LiveCard
                 icon={Utensils}
                 title="Food Nearby"
-                value="128"
-                suffix="Restaurants"
+                value="Browse"
+                suffix="Food stops"
               />
             </div>
           </div>
@@ -537,7 +297,7 @@ export function PujaWayHome() {
               <div className={styles.storyVisualShade} />
               <div className={styles.storyVisualTop}>
                 <h3>Subha<br />Durga Pujo</h3>
-                <Brand inverse />
+                <PujaWayBrand inverse />
               </div>
               <div className={styles.storyVisualMessage}>
                 <p>May Ma Durga bless you and your family with happiness, peace and prosperity.</p>
@@ -597,7 +357,7 @@ export function PujaWayHome() {
         <div className={styles.footerPattern} aria-hidden="true" />
         <div className={`${styles.container} ${styles.footerGrid}`}>
           <div className={styles.footerBrandBlock}>
-            <Brand inverse />
+            <PujaWayBrand inverse />
             <h2>Made for Kolkata. Built by CodeFair.</h2>
             <p>PujaWay<br />Your digital guide to Kolkata Puja</p>
             <p>A CodeFair Product<br />© 2026 CodeFair. All rights reserved.</p>
@@ -605,7 +365,7 @@ export function PujaWayHome() {
 
           <nav className={styles.footerLinks} aria-label="Footer navigation">
             <h3>Services</h3>
-            {navItems.map((item) => (
+            {PUJAWAY_NAV_ITEMS.map((item) => (
               <Link key={item.label} href={item.href}>
                 {item.label}
               </Link>

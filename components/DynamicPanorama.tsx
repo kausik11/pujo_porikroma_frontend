@@ -1,3 +1,5 @@
+"use client";
+
 import dynamic from "next/dynamic";
 
 export const DynamicPanorama = dynamic(() => import("./PanoramaViewer").then((mod) => mod.PanoramaViewer), {
