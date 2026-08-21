@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Noto_Sans_Bengali, Noto_Serif_Bengali } from "next/font/google";
+import { PujaWayFooter } from "@/components/pujaway/PujaWayFooter";
 import { QueryProvider } from "@/components/QueryProvider";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
@@ -47,6 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <QueryProvider>{children}</QueryProvider>
+        <PujaWayFooter />
       </body>
     </html>
   );

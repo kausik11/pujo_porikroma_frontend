@@ -4,15 +4,8 @@ import Link from "next/link";
 import { ArrowRight, Menu, Search, SlidersHorizontal, X } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import styles from "@/app/pujaway.module.css";
+import { PUJAWAY_NAV_ITEMS } from "@/components/pujaway/navigation";
 import { PujaWayBrand } from "@/components/pujaway/PujaWayBrand";
-
-export const PUJAWAY_NAV_ITEMS = [
-  { label: "Explore", href: "/#explore" },
-  { label: "Puja Trails", href: "/route-planner" },
-  { label: "Areas", href: "/locations" },
-  { label: "Food", href: "/#live" },
-  { label: "Our Story", href: "/#story" },
-] as const;
 
 export type PujaWayHeaderProps = {
   className?: string;
