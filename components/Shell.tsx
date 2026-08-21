@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, LayoutDashboard, ListPlus, LogOut, MapPinned, Plus, Route, Settings } from "lucide-react";
-import styles from "@/app/pujaway.module.css";
 import { PujaWayHeader } from "@/components/pujaway/PujaWayHeader";
 
 export type ShellProps = {
@@ -17,7 +16,7 @@ export function Shell({ children, variant = "admin" }: ShellProps) {
 
   if (publicFacing) {
     return (
-      <div className={styles.page}>
+      <div className="min-h-screen overflow-x-hidden bg-[#fff7e7] font-(family-name:--font-geist-sans) text-[#171612]">
         <PujaWayHeader />
         <main id="main-content" tabIndex={-1} className="mx-auto w-full max-w-[1230px] px-6 py-12 sm:py-16">
           {children}
