@@ -41,11 +41,14 @@ export const api = {
   },
   removePanorama: (id: string) => request<Location>(`/admin/locations/${id}/panorama`, { method: "DELETE" }),
   deletePhoto: (id: string, publicId: string) => request<Location>(`/admin/locations/${id}/gallery/${encodeURIComponent(publicId)}`, { method: "DELETE" }),
-  baseRoute: (origin: Coordinate, destination: Coordinate, mode: TravelMode = "DRIVING") =>
-    request<{ baseRoute: RouteResult }>("/routes/base-route", body({ origin, destination, mode })),
-  alongRoute: (origin: Coordinate, destination: Coordinate, maxDetourMinutes: number) =>
-    request<{ baseRoute: RouteResult; offices: AlongRouteOffice[] }>("/routes/along-route", body({ origin, destination, maxDetourMinutes })),
-  multiOffice: (origin: Coordinate, officeIds: string[], destination?: Coordinate) =>
-    request<{ route: RouteResult & { waypointOrder: number[] }; offices: Location[] }>("/routes/multi-office", body({ origin, officeIds, destination })),
+  baseRoute: (origin: Coordinate, destination: Coordinate, mode: TravelMode = "DRIVING", signal?: AbortSignal) =>
+    request<{ baseRoute: RouteResult }>("/routes/base-route", { ...body({ origin, destination, mode }), signal }),
+  alongRoute: (origin: Coordinate, destination: Coordinate, maxDetourMinutes: number, mode: TravelMode = "DRIVING") =>
+    request<{ baseRoute: RouteResult; offices: AlongRouteOffice[] }>("/routes/along-route", body({ origin, destination, maxDetourMinutes, mode })),
+  multiOffice: (origin: Coordinate, officeIds: string[], destination?: Coordinate, mode: TravelMode = "DRIVING", signal?: AbortSignal) =>
+    request<{ route: RouteResult & { waypointOrder: number[] }; offices: Location[] }>("/routes/multi-office", {
+      ...body({ origin, officeIds, destination, mode }),
+      signal
+    }),
   geocode: (query: string) => request<Array<Coordinate & { label: string }>>(`/routes/geocode?q=${encodeURIComponent(query)}`)
 };

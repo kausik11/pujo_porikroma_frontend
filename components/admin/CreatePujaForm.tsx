@@ -590,7 +590,7 @@ export function CreatePujaForm() {
           <div className="mt-5 grid gap-4 md:grid-cols-2">
             <label className="flex min-h-11 items-start gap-3 rounded-md border border-slate-300 px-3 py-2 text-sm text-slate-800">
               <input type="checkbox" checked={draft.featured} onChange={(event) => update("featured", event.target.checked)} className="mt-0.5 h-4 w-4" />
-              <span><strong className="block">Feature on the homepage</strong><span className="text-slate-600">Include this Puja in the curated homepage card set.</span></span>
+              <span><strong className="block">Publish as a featured Puja</strong><span className="text-slate-600">Include this Puja on the homepage and in the Puja Trails planner.</span></span>
             </label>
             <label className="flex min-h-11 items-center gap-3 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800">
               <input type="checkbox" checked={draft.verified} onChange={(event) => update("verified", event.target.checked)} className="h-4 w-4" />

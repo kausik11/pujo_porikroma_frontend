@@ -1,0 +1,1569 @@
+.page {
+  --trail-cream: #fff7e7;
+  --trail-cream-deep: #f6e7bf;
+  --trail-gold: #f4ce69;
+  --trail-ink: #171612;
+  --trail-muted: #665f52;
+  --trail-red: #981b25;
+  min-height: 100vh;
+  color: var(--trail-ink);
+  background: #15110d;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.page button,
+.page input {
+  font: inherit;
+}
+
+.page a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.backdrop {
+  position: relative;
+  min-height: 980px;
+  padding: clamp(42px, 5vw, 78px) 24px clamp(64px, 7vw, 104px);
+  overflow: hidden;
+  background:
+    linear-gradient(180deg, rgb(9 9 8 / 30%), rgb(8 7 6 / 74%)),
+    url("/images/pujaway/hero.jpg") center 39% / cover fixed;
+  isolation: isolate;
+}
+
+.backdropVeil {
+  position: absolute;
+  z-index: -1;
+  background:
+    radial-gradient(circle at 53% 12%, rgb(255 189 74 / 14%), transparent 39%),
+    linear-gradient(90deg, rgb(17 10 6 / 62%), transparent 25% 74%, rgb(15 8 4 / 65%));
+  inset: 0;
+}
+
+.planner {
+  width: min(100%, 1390px);
+  margin-inline: auto;
+  overflow: hidden;
+  background: var(--trail-cream);
+  border: 1px solid rgb(255 255 255 / 43%);
+  border-radius: 28px;
+  box-shadow: 0 32px 100px rgb(0 0 0 / 42%);
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: minmax(390px, 0.39fr) minmax(0, 0.61fr);
+  min-height: 720px;
+}
+
+.itineraryPanel {
+  position: relative;
+  z-index: 2;
+  max-height: 760px;
+  padding: 38px 34px 32px;
+  overflow: auto;
+  background: rgb(255 255 255 / 96%);
+  border-right: 1px solid rgb(23 22 18 / 12%);
+  scrollbar-color: #bdb4a5 transparent;
+  scrollbar-width: thin;
+}
+
+.itineraryHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 22px;
+}
+
+.eyebrow {
+  display: block;
+  margin-bottom: 7px;
+  color: #8f1d23;
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.itineraryHeader h1,
+.summaryHeading h2,
+.pickerHeader h2,
+.errorState h1 {
+  margin: 0;
+  color: var(--trail-ink);
+  font-weight: 530;
+  letter-spacing: -0.045em;
+}
+
+.itineraryHeader h1 {
+  font-size: clamp(31px, 3vw, 42px);
+  line-height: 1.02;
+}
+
+.itineraryHeader p {
+  margin: 10px 0 0;
+  color: var(--trail-muted);
+  font-size: 15px;
+  font-weight: 560;
+}
+
+.editButton,
+.addButton,
+.locationButton,
+.emptyTrail button,
+.errorState button,
+.errorState a {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 15px;
+  color: #272018;
+  font-size: 13px;
+  font-weight: 680;
+  cursor: pointer;
+  background: #ffe39a;
+  border: 1px solid #f1ce75;
+  border-radius: 999px;
+  transition: background 160ms ease, transform 160ms ease, box-shadow 160ms ease;
+}
+
+.editButton svg,
+.addButton svg,
+.locationButton svg,
+.emptyTrail button svg,
+.errorState button svg {
+  width: 18px;
+  height: 18px;
+}
+
+.editButton:hover,
+.addButton:hover:not(:disabled),
+.locationButton:hover:not(:disabled),
+.emptyTrail button:hover,
+.errorState button:hover,
+.errorState a:hover {
+  background: #ffedbb;
+  box-shadow: 0 8px 22px rgb(112 71 10 / 13%);
+  transform: translateY(-1px);
+}
+
+.orderNotice {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  padding: 12px 14px;
+  margin: 27px 0 20px;
+  color: #5d5548;
+  font-size: 12px;
+  line-height: 1.45;
+  background: #fff9ea;
+  border: 1px solid #eee2c6;
+  border-radius: 10px;
+}
+
+.orderNotice svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+  color: #9d2027;
+}
+
+.orderNotice strong {
+  color: #302b24;
+}
+
+.stopList {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.stopItem {
+  position: relative;
+  display: grid;
+  grid-template-columns: 34px minmax(0, 1fr);
+  gap: 12px;
+  padding-bottom: 16px;
+  transition: opacity 160ms ease, transform 160ms ease;
+}
+
+.stopItem:not(:last-child)::before {
+  position: absolute;
+  top: 30px;
+  bottom: -3px;
+  left: 16px;
+  z-index: 0;
+  content: "";
+  border-left: 1.5px dashed #878174;
+}
+
+.stopItem.dragging {
+  opacity: 0.46;
+  transform: scale(0.99);
+}
+
+.stopNumber {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  width: 34px;
+  height: 34px;
+  margin-top: 32px;
+  color: white;
+  font-size: 13px;
+  font-weight: 750;
+  background: var(--trail-ink);
+  border: 4px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgb(23 22 18 / 16%);
+  place-items: center;
+}
+
+.stopCard {
+  position: relative;
+  display: grid;
+  grid-template-columns: 92px minmax(0, 1fr) 28px;
+  gap: 15px;
+  min-height: 116px;
+  padding: 11px;
+  background: white;
+  border: 1px solid #cfc9bd;
+  border-radius: 12px;
+  box-shadow: 0 5px 14px rgb(40 31 18 / 4%);
+}
+
+.stopPhoto,
+.pickerPhoto {
+  position: relative;
+  display: grid;
+  overflow: hidden;
+  color: #fff4d9;
+  font-weight: 750;
+  background:
+    radial-gradient(circle at 50% 38%, rgb(244 206 105 / 35%), transparent 35%),
+    #3b2d22;
+  border-radius: 9px;
+  place-items: center;
+}
+
+.stopPhoto {
+  width: 92px;
+  height: 92px;
+}
+
+.stopPhoto img,
+.pickerPhoto img {
+  object-fit: cover;
+}
+
+.stopCopy {
+  min-width: 0;
+  padding: 5px 0 2px;
+}
+
+.stopCopy > a {
+  display: block;
+  overflow: hidden;
+  color: #1d1b18;
+  font-size: 16px;
+  font-weight: 680;
+  line-height: 1.25;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.stopCopy > a:hover,
+.stopCopy > a:focus-visible {
+  color: var(--trail-red);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stopCopy > p {
+  margin: 5px 0 0;
+  overflow: hidden;
+  color: #696257;
+  font-size: 12px;
+  line-height: 1.35;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.legMeta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px 14px;
+  min-height: 22px;
+  margin-top: 15px;
+  color: #4d483f;
+  font-size: 12px;
+  font-weight: 560;
+}
+
+.legMeta svg {
+  width: 18px;
+  height: 18px;
+  color: #181714;
+}
+
+.legMeta strong {
+  color: #198038;
+  font-weight: 650;
+}
+
+.stopActions {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  align-items: center;
+}
+
+.dragHandle,
+.stopActions button {
+  display: grid;
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  color: #665f54;
+  background: transparent;
+  border: 0;
+  border-radius: 7px;
+  place-items: center;
+}
+
+.dragHandle {
+  cursor: grab;
+  touch-action: none;
+}
+
+.dragHandle:active {
+  cursor: grabbing;
+}
+
+.dragHandle svg,
+.stopActions button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.stopActions button {
+  cursor: pointer;
+}
+
+.stopActions button:hover:not(:disabled),
+.stopActions button:focus-visible {
+  color: #171612;
+  background: #f4eee1;
+}
+
+.stopActions button:last-child:hover,
+.stopActions button:last-child:focus-visible {
+  color: #a71923;
+  background: #fff0f0;
+}
+
+.stopActions button:disabled {
+  cursor: not-allowed;
+  opacity: 0.25;
+}
+
+.itineraryActions {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  padding-left: 46px;
+  margin-top: 3px;
+}
+
+.addButton,
+.locationButton {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.addButton:disabled,
+.locationButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+}
+
+.locationButton {
+  color: #3d382f;
+  background: white;
+  border-color: #d8d0c0;
+}
+
+.locationButton:hover:not(:disabled) {
+  background: #fffaf0;
+}
+
+.locationButton.locationActive {
+  color: #165b2a;
+  background: #effaf0;
+  border-color: #8cc296;
+}
+
+.geoError {
+  margin: 3px 0 0;
+  color: #9b1d25;
+  font-size: 12px;
+  line-height: 1.45;
+}
+
+.emptyTrail {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 370px;
+  padding: 34px 20px;
+  text-align: center;
+  border: 1px dashed #d3c9b5;
+  border-radius: 15px;
+}
+
+.emptyTrail > span {
+  display: grid;
+  width: 64px;
+  height: 64px;
+  color: #fff8e8;
+  background: #181714;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.emptyTrail > span svg {
+  width: 28px;
+  height: 28px;
+}
+
+.emptyTrail h2 {
+  margin: 19px 0 0;
+  font-size: 24px;
+}
+
+.emptyTrail p {
+  max-width: 320px;
+  margin: 9px 0 20px;
+  color: var(--trail-muted);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.mapPanel {
+  position: relative;
+  min-width: 0;
+  min-height: 720px;
+  overflow: hidden;
+  background: #e7e0d5;
+}
+
+.mapRegion,
+.mapCanvas {
+  width: 100%;
+  height: 100%;
+  min-height: 720px;
+  border-radius: 0 !important;
+}
+
+.mapCanvas {
+  z-index: 1;
+  background: #e7e0d5;
+}
+
+.mapCanvas :global(.leaflet-tile-pane) {
+  filter: sepia(0.1) saturate(0.72) contrast(0.94) brightness(1.05);
+}
+
+.mapLoading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 720px;
+  color: #5f584d;
+  background:
+    linear-gradient(90deg, rgb(255 255 255 / 0%), rgb(255 255 255 / 38%), rgb(255 255 255 / 0%)),
+    #e7e0d5;
+}
+
+.transportCard {
+  position: absolute;
+  top: 28px;
+  right: 28px;
+  z-index: 500;
+  width: min(320px, calc(100% - 56px));
+  min-height: 286px;
+  padding: 62px 0 12px;
+  overflow: hidden;
+  background: rgb(255 255 255 / 95%);
+  border: 1px solid rgb(23 22 18 / 14%);
+  border-radius: 15px;
+  box-shadow: 0 20px 48px rgb(45 33 18 / 20%);
+  backdrop-filter: blur(10px);
+}
+
+.transportCard legend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 62px;
+  padding: 0 21px;
+  margin: 0;
+  font-size: 19px;
+  font-weight: 680;
+  border-bottom: 1px solid #e5ded2;
+}
+
+.transportCard label {
+  position: relative;
+  display: grid;
+  grid-template-columns: 22px 23px minmax(0, 1fr);
+  gap: 11px;
+  align-items: center;
+  min-height: 58px;
+  padding: 9px 20px;
+  cursor: pointer;
+  border-left: 3px solid transparent;
+}
+
+.transportCard label:hover {
+  background: #fff9ec;
+}
+
+.transportCard label.transportSelected {
+  background: #fff6df;
+  border-left-color: var(--trail-red);
+}
+
+.transportCard input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.radioMark {
+  display: grid;
+  width: 21px;
+  height: 21px;
+  border: 2px solid #777064;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.transportSelected .radioMark {
+  border-color: var(--trail-red);
+}
+
+.transportSelected .radioMark::after {
+  width: 11px;
+  height: 11px;
+  content: "";
+  background: var(--trail-red);
+  border-radius: 50%;
+}
+
+.transportCard label > svg {
+  width: 22px;
+  height: 22px;
+}
+
+.transportCard label > span:last-child {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.transportCard label strong {
+  overflow: hidden;
+  font-size: 14px;
+  font-weight: 660;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.transportCard label small {
+  margin-top: 2px;
+  color: #71695e;
+  font-size: 11px;
+}
+
+.transportNote {
+  margin: 7px 18px 0;
+  color: #6e6558;
+  font-size: 10px;
+  line-height: 1.45;
+}
+
+.mapStatus {
+  position: absolute;
+  right: 28px;
+  bottom: 28px;
+  left: 28px;
+  z-index: 500;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: fit-content;
+  max-width: calc(100% - 56px);
+  min-height: 42px;
+  padding: 10px 14px;
+  color: #f8f3e7;
+  font-size: 12px;
+  line-height: 1.35;
+  background: rgb(23 22 18 / 91%);
+  border: 1px solid rgb(255 255 255 / 18%);
+  border-radius: 999px;
+  box-shadow: 0 10px 30px rgb(0 0 0 / 19%);
+  backdrop-filter: blur(7px);
+}
+
+.mapStatus svg {
+  flex: none;
+  width: 17px;
+  height: 17px;
+}
+
+.mapStatus button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 9px;
+  color: #171612;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #ffe39a;
+  border: 0;
+  border-radius: 999px;
+}
+
+.liveDot {
+  flex: none;
+  width: 8px;
+  height: 8px;
+  background: #65c66f;
+  border-radius: 50%;
+  box-shadow: 0 0 0 5px rgb(101 198 111 / 13%);
+}
+
+.numberedMarker {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  color: white;
+  background: var(--trail-red);
+  border: 3px solid #fff8e8;
+  border-radius: 50% 50% 50% 9px;
+  box-shadow: 0 8px 18px rgb(60 10 14 / 35%);
+  place-items: center;
+  transform: rotate(-45deg);
+}
+
+.numberedMarker b {
+  font-size: 15px;
+  transform: rotate(45deg);
+}
+
+.originMarker {
+  display: grid;
+  width: 32px;
+  height: 32px;
+  background: rgb(255 255 255 / 94%);
+  border: 2px solid #1a7a3c;
+  border-radius: 50%;
+  box-shadow: 0 7px 18px rgb(0 0 0 / 24%);
+  place-items: center;
+}
+
+.originMarker span {
+  width: 13px;
+  height: 13px;
+  background: #1a9b4b;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px rgb(26 155 75 / 16%);
+}
+
+.mapPopup {
+  display: flex;
+  min-width: 190px;
+  flex-direction: column;
+  gap: 6px;
+  font-family: var(--font-geist-sans), Arial, sans-serif;
+}
+
+.mapPopup strong {
+  font-size: 13px;
+}
+
+.mapPopup span {
+  color: #675f54;
+  font-size: 11px;
+  line-height: 1.35;
+}
+
+.mapPopup a {
+  color: #981b25;
+  font-size: 11px;
+  font-weight: 700;
+  text-decoration: underline;
+}
+
+.summarySection {
+  padding: 33px 36px 36px;
+  background:
+    radial-gradient(circle at 12% 100%, rgb(244 206 105 / 16%), transparent 31%),
+    var(--trail-cream);
+  border-top: 1px solid #eadfc8;
+}
+
+.summaryHeading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin-bottom: 19px;
+}
+
+.summaryHeading .eyebrow {
+  display: none;
+}
+
+.summaryHeading h2 {
+  font-size: 23px;
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) minmax(220px, 1.06fr);
+  gap: 14px;
+}
+
+.metricCard {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  min-height: 112px;
+  padding: 18px;
+  background: rgb(255 255 255 / 91%);
+  border: 1px solid #c9c0b1;
+  border-radius: 13px;
+}
+
+.metricCard > svg {
+  flex: none;
+  width: 31px;
+  height: 31px;
+  color: #171612;
+}
+
+.metricCard span {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.metricCard small {
+  color: #4f493f;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+
+.metricCard strong {
+  margin-top: 7px;
+  color: #171612;
+  font-size: clamp(19px, 2vw, 28px);
+  font-weight: 520;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.startButton {
+  display: flex;
+  min-height: 112px;
+  padding: 16px;
+  color: #fff8e8 !important;
+  cursor: pointer;
+  background: #171612;
+  border: 1px solid #171612;
+  border-radius: 13px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.startButton > span {
+  display: grid;
+  width: 39px;
+  height: 39px;
+  margin-bottom: 8px;
+  color: #171612;
+  background: #fff0ba;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.startButton > span svg {
+  width: 20px;
+  height: 20px;
+}
+
+.startButton strong {
+  font-size: 16px;
+  font-weight: 650;
+}
+
+.startButton small {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  color: #d5cdbf;
+  font-size: 9px;
+}
+
+.startButton small svg {
+  width: 10px;
+  height: 10px;
+}
+
+.startButton:hover:not(:disabled),
+.startButton:focus-visible:not(:disabled) {
+  background: #841923;
+  transform: translateY(-2px);
+}
+
+.startButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.tipBanner {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  width: min(100%, 860px);
+  min-height: 54px;
+  padding: 15px 19px;
+  margin: 25px auto 0;
+  color: #f8f2e8;
+  font-size: 12px;
+  line-height: 1.45;
+  background: #171612;
+  border-radius: 10px;
+}
+
+.tipBanner svg {
+  flex: none;
+  width: 21px;
+  height: 21px;
+  color: #ffdc79;
+}
+
+.tipBanner p {
+  margin: 1px 0 0;
+}
+
+.loadingState,
+.errorState {
+  display: flex;
+  min-height: 650px;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding: 50px;
+  text-align: left;
+}
+
+.loadingState > svg,
+.errorState > svg {
+  width: 48px;
+  height: 48px;
+}
+
+.loadingState h1 {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 680;
+}
+
+.loadingState p,
+.errorState p {
+  margin: 7px 0 0;
+  color: var(--trail-muted);
+}
+
+.errorState > svg {
+  color: #9b1d25;
+}
+
+.errorState h1 {
+  font-size: clamp(27px, 4vw, 42px);
+}
+
+.errorState button,
+.errorState a {
+  margin-top: 20px;
+}
+
+.loadingSpinner {
+  display: block;
+  width: 34px;
+  height: 34px;
+  border: 3px solid rgb(23 22 18 / 18%);
+  border-top-color: #981b25;
+  border-radius: 50%;
+  animation: spin 800ms linear infinite;
+}
+
+.spin {
+  animation: spin 850ms linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.pickerBackdrop {
+  position: fixed;
+  z-index: 2000;
+  display: grid;
+  padding: 24px;
+  background: rgb(13 10 7 / 74%);
+  backdrop-filter: blur(8px);
+  inset: 0;
+  place-items: center;
+}
+
+.pickerDialog {
+  display: flex;
+  width: min(100%, 760px);
+  max-height: min(820px, calc(100vh - 48px));
+  max-height: min(820px, calc(100dvh - 48px));
+  overflow: hidden;
+  background: var(--trail-cream);
+  border: 1px solid rgb(255 255 255 / 52%);
+  border-radius: 22px;
+  box-shadow: 0 30px 90px rgb(0 0 0 / 46%);
+  flex-direction: column;
+}
+
+.pickerHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 28px 30px 20px;
+}
+
+.pickerHeader h2 {
+  font-size: 31px;
+}
+
+.pickerHeader p {
+  margin: 8px 0 0;
+  color: var(--trail-muted);
+  font-size: 13px;
+}
+
+.pickerHeader > button {
+  display: grid;
+  flex: none;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  color: #171612;
+  cursor: pointer;
+  background: white;
+  border: 1px solid #d7cdbb;
+  border-radius: 50%;
+  place-items: center;
+}
+
+.pickerHeader > button svg {
+  width: 20px;
+  height: 20px;
+}
+
+.pickerSearch {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) 38px;
+  gap: 9px;
+  align-items: center;
+  min-height: 52px;
+  padding: 0 8px 0 16px;
+  margin: 0 30px 17px;
+  background: white;
+  border: 1px solid #cfc4b1;
+  border-radius: 11px;
+}
+
+.pickerSearch:focus-within {
+  border-color: #981b25;
+  box-shadow: 0 0 0 3px rgb(152 27 37 / 11%);
+}
+
+.pickerSearch > svg {
+  width: 19px;
+  height: 19px;
+  color: #6c6458;
+}
+
+.pickerSearch input {
+  width: 100%;
+  min-width: 0;
+  height: 48px;
+  color: #171612;
+  background: transparent;
+  border: 0;
+  outline: 0;
+}
+
+.pickerSearch button {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  padding: 0;
+  color: #625b50;
+  cursor: pointer;
+  background: transparent;
+  border: 0;
+  border-radius: 8px;
+  place-items: center;
+}
+
+.pickerSearch button:hover {
+  background: #f5eee1;
+}
+
+.pickerSearch button svg {
+  width: 17px;
+  height: 17px;
+}
+
+.pickerResults {
+  display: grid;
+  gap: 11px;
+  min-height: 0;
+  padding: 0 30px 24px;
+  overflow: auto;
+  align-content: start;
+  flex: 1 1 230px;
+  scrollbar-color: #bdb4a5 transparent;
+  scrollbar-width: thin;
+}
+
+.pickerCard {
+  display: grid;
+  grid-template-columns: 78px minmax(0, 1fr) auto;
+  gap: 15px;
+  align-items: center;
+  min-height: 100px;
+  padding: 10px 12px;
+  background: rgb(255 255 255 / 86%);
+  border: 1px solid #d5ccbd;
+  border-radius: 12px;
+}
+
+.pickerPhoto {
+  width: 78px;
+  height: 78px;
+}
+
+.pickerCard > div:nth-child(2) {
+  min-width: 0;
+}
+
+.pickerCard > div:nth-child(2) > span {
+  display: inline-block;
+  padding: 4px 8px;
+  color: #6d4910;
+  font-size: 9px;
+  font-weight: 750;
+  text-transform: capitalize;
+  background: #ffe7a6;
+  border-radius: 999px;
+}
+
+.pickerCard h3 {
+  margin: 7px 0 0;
+  overflow: hidden;
+  font-size: 16px;
+  font-weight: 680;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickerCard p {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin: 5px 0 0;
+  overflow: hidden;
+  color: #70685d;
+  font-size: 11px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pickerCard p svg {
+  flex: none;
+  width: 13px;
+  height: 13px;
+  color: #e24651;
+}
+
+.pickerCard > button,
+.pickerFooter button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 42px;
+  padding: 9px 14px;
+  color: white;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #171612;
+  border: 1px solid #171612;
+  border-radius: 9px;
+}
+
+.pickerCard > button svg {
+  width: 16px;
+  height: 16px;
+}
+
+.pickerCard > button:hover:not(:disabled),
+.pickerFooter button:hover {
+  background: #8c1922;
+}
+
+.pickerCard > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.48;
+}
+
+.noPickerResults {
+  display: flex;
+  min-height: 230px;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  color: var(--trail-muted);
+  text-align: center;
+  flex-direction: column;
+}
+
+.noPickerResults svg {
+  width: 31px;
+  height: 31px;
+}
+
+.pickerFooter {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 16px 30px;
+  color: #5f584e;
+  font-size: 12px;
+  background: #f4e8ca;
+  border-top: 1px solid #ddcfaf;
+}
+
+.pickerFooter button {
+  min-width: 112px;
+}
+
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.page :where(button, a, input):focus-visible {
+  outline: 3px solid #c42732;
+  outline-offset: 3px;
+}
+
+@media (max-width: 1180px) {
+  .backdrop {
+    padding-inline: 18px;
+  }
+
+  .workspace {
+    grid-template-columns: minmax(360px, 0.43fr) minmax(0, 0.57fr);
+  }
+
+  .itineraryPanel {
+    padding-inline: 26px;
+  }
+
+  .transportCard {
+    width: 280px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .startButton {
+    grid-column: 1 / -1;
+    min-height: 88px;
+  }
+}
+
+@media (max-width: 920px) {
+  .backdrop {
+    padding: 32px 14px 62px;
+    background-attachment: scroll;
+  }
+
+  .planner {
+    border-radius: 22px;
+  }
+
+  .workspace {
+    grid-template-columns: 1fr;
+  }
+
+  .itineraryPanel {
+    max-height: none;
+    border-right: 0;
+    border-bottom: 1px solid #d9d1c3;
+  }
+
+  .mapPanel,
+  .mapRegion,
+  .mapCanvas,
+  .mapLoading {
+    min-height: 590px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .startButton {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 640px) {
+  .backdrop {
+    padding: 18px 0 46px;
+  }
+
+  .planner {
+    border-right: 0;
+    border-left: 0;
+    border-radius: 0;
+  }
+
+  .itineraryPanel {
+    padding: 28px 18px 25px;
+  }
+
+  .itineraryHeader {
+    flex-direction: column;
+  }
+
+  .itineraryHeader h1 {
+    font-size: 36px;
+  }
+
+  .editButton {
+    width: 100%;
+  }
+
+  .orderNotice {
+    margin-top: 20px;
+  }
+
+  .stopItem {
+    grid-template-columns: 27px minmax(0, 1fr);
+    gap: 8px;
+  }
+
+  .stopItem:not(:last-child)::before {
+    left: 13px;
+  }
+
+  .stopNumber {
+    width: 28px;
+    height: 28px;
+    margin-top: 34px;
+    font-size: 11px;
+    border-width: 3px;
+  }
+
+  .stopCard {
+    grid-template-columns: 72px minmax(0, 1fr) 27px;
+    gap: 10px;
+    min-height: 108px;
+    padding: 10px;
+  }
+
+  .stopPhoto {
+    width: 72px;
+    height: 86px;
+  }
+
+  .stopCopy > a {
+    font-size: 14px;
+  }
+
+  .legMeta {
+    gap: 5px 9px;
+    margin-top: 12px;
+    font-size: 10px;
+  }
+
+  .dragHandle {
+    display: none;
+  }
+
+  .itineraryActions {
+    padding-left: 35px;
+  }
+
+  .mapPanel {
+    display: flex;
+    min-height: 0;
+    background: #f7edda;
+    flex-direction: column;
+  }
+
+  .transportCard {
+    position: relative;
+    z-index: auto;
+    order: 1;
+    width: auto;
+    margin: 16px;
+    border-radius: 13px;
+  }
+
+  .mapRegion,
+  .mapCanvas,
+  .mapLoading {
+    order: 2;
+    min-height: 450px;
+  }
+
+  .mapStatus {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    max-width: calc(100% - 24px);
+    border-radius: 10px;
+  }
+
+  .summarySection {
+    padding: 29px 18px 32px;
+  }
+
+  .summaryHeading .eyebrow {
+    display: block;
+  }
+
+  .summaryHeading h2 {
+    font-size: 26px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .metricCard {
+    min-height: 116px;
+    padding: 14px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .metricCard > svg {
+    width: 25px;
+    height: 25px;
+  }
+
+  .metricCard strong {
+    font-size: 22px;
+  }
+
+  .startButton {
+    min-height: 108px;
+  }
+
+  .tipBanner {
+    font-size: 11px;
+  }
+
+  .pickerBackdrop {
+    padding: 0;
+    place-items: end center;
+  }
+
+  .pickerDialog {
+    width: 100%;
+    max-height: 92vh;
+    max-height: 92dvh;
+    border-radius: 22px 22px 0 0;
+  }
+
+  .pickerHeader {
+    padding: 24px 18px 17px;
+  }
+
+  .pickerHeader h2 {
+    font-size: 27px;
+  }
+
+  .pickerHeader p {
+    max-width: 290px;
+  }
+
+  .pickerSearch {
+    margin-inline: 18px;
+  }
+
+  .pickerResults {
+    padding-inline: 18px;
+  }
+
+  .pickerCard {
+    grid-template-columns: 64px minmax(0, 1fr);
+  }
+
+  .pickerPhoto {
+    width: 64px;
+    height: 75px;
+    grid-row: span 2;
+  }
+
+  .pickerCard > button {
+    grid-column: 2;
+    width: 100%;
+  }
+
+  .pickerFooter {
+    padding-inline: 18px;
+    padding-bottom: calc(16px + env(safe-area-inset-bottom));
+  }
+
+  .loadingState,
+  .errorState {
+    min-height: 520px;
+    padding: 34px 24px;
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 390px) {
+  .stopCard {
+    grid-template-columns: 62px minmax(0, 1fr) 25px;
+    gap: 8px;
+  }
+
+  .stopPhoto {
+    width: 62px;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .startButton {
+    grid-column: 1;
+  }
+}
+
+@media (max-height: 520px) {
+  .pickerBackdrop {
+    padding: 12px;
+  }
+
+  .pickerDialog {
+    max-height: calc(100vh - 24px);
+    max-height: calc(100dvh - 24px);
+    border-radius: 16px;
+  }
+
+  .pickerHeader {
+    align-items: center;
+    padding: 14px 18px 10px;
+  }
+
+  .pickerHeader .eyebrow,
+  .pickerHeader p {
+    display: none;
+  }
+
+  .pickerHeader h2 {
+    font-size: 24px;
+  }
+
+  .pickerHeader > button {
+    width: 38px;
+    height: 38px;
+  }
+
+  .pickerSearch {
+    min-height: 44px;
+    margin: 0 18px 10px;
+  }
+
+  .pickerSearch input {
+    height: 42px;
+  }
+
+  .pickerResults {
+    padding: 0 18px 10px;
+    flex-basis: 96px;
+  }
+
+  .pickerFooter {
+    flex: none;
+    padding: 10px 18px calc(10px + env(safe-area-inset-bottom));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .page *,
+  .page *::before,
+  .page *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+
+  .loadingSpinner,
+  .spin {
+    animation: none;
+  }
+}

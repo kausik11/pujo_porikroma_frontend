@@ -14,6 +14,26 @@ export function directionsUrl(destination: Coordinate, origin?: Coordinate, mode
   return `${base}${originPart}&destination=${destination.lat},${destination.lng}${modePart}`;
 }
 
+export function trailDirectionsUrl(stops: Coordinate[], origin?: Coordinate, mode: TravelMode = "WALKING") {
+  if (stops.length === 0) return "";
+
+  const destination = stops.at(-1)!;
+  const routeOrigin = origin ?? (stops.length > 1 ? stops[0] : undefined);
+  const waypoints = origin ? stops.slice(0, -1) : stops.slice(1, -1);
+  const params = new URLSearchParams({
+    api: "1",
+    destination: `${destination.lat},${destination.lng}`,
+    travelmode: mode.toLowerCase()
+  });
+
+  if (routeOrigin) params.set("origin", `${routeOrigin.lat},${routeOrigin.lng}`);
+  if (waypoints.length > 0) {
+    params.set("waypoints", waypoints.map((point) => `${point.lat},${point.lng}`).join("|"));
+  }
+
+  return `https://www.google.com/maps/dir/?${params.toString()}`;
+}
+
 export function km(meters?: number) {
   if (meters == null) return "";
   return `${(meters / 1000).toFixed(1)} km`;
