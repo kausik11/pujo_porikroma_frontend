@@ -1,0 +1,402 @@
+.directions {
+  min-width: 0;
+  padding: clamp(22px, 3vw, 38px);
+  color: #fff8e8;
+  background: #171716;
+  border: 1px solid rgb(255 255 255 / 8%);
+  border-radius: 12px;
+}
+
+.heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin: 0 0 24px;
+  color: #fff8e8;
+  font-size: clamp(25px, 2.2vw, 34px);
+  font-weight: 560;
+  line-height: 1.2;
+}
+
+.heading svg {
+  flex: none;
+  width: 31px;
+  height: 31px;
+}
+
+.mapFrame {
+  overflow: hidden;
+  background: #282a31;
+  border: 1px solid rgb(255 255 255 / 12%);
+  border-radius: 10px;
+}
+
+.map {
+  width: 100%;
+  height: clamp(270px, 34vw, 390px);
+}
+
+.routePoints {
+  position: relative;
+  display: grid;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.pointRow {
+  display: grid;
+  grid-template-columns: 22px minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: center;
+  min-height: 67px;
+  padding: 12px 15px;
+  color: #171612;
+  background: #fff7e7;
+  border-radius: 8px;
+}
+
+.pointRow > div {
+  min-width: 0;
+}
+
+.pointRow strong,
+.pointRow span {
+  display: block;
+}
+
+.pointRow strong {
+  overflow: hidden;
+  font-size: 15px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.pointRow div span {
+  margin-top: 4px;
+  color: #6b6357;
+  font-size: 12px;
+}
+
+.pointRow button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 44px;
+  padding: 8px 12px;
+  color: #fff;
+  font: 650 13px/1.2 inherit;
+  cursor: pointer;
+  background: #ba3840;
+  border: 0;
+  border-radius: 7px;
+}
+
+.pointRow button svg {
+  width: 17px;
+  height: 17px;
+  margin-right: 7px;
+}
+
+.pointRow button:disabled {
+  cursor: wait;
+  opacity: 0.68;
+}
+
+.originDot {
+  width: 13px;
+  height: 13px;
+  margin-left: 4px;
+  background: #66a500;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #4f7e00;
+}
+
+.destinationIcon {
+  width: 21px;
+  height: 21px;
+  color: #ed5c65;
+}
+
+.connector {
+  position: absolute;
+  top: 68px;
+  right: 18px;
+  color: #fff8e8;
+  font-size: 20px;
+}
+
+.transportFieldset {
+  padding: 0;
+  margin: 25px 0 0;
+  border: 0;
+}
+
+.transportFieldset legend {
+  margin-bottom: 12px;
+  color: #fff8e8;
+  font-size: 15px;
+  font-weight: 650;
+}
+
+.transportGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.transportOption {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 162px;
+  padding: 17px;
+  color: #171612;
+  cursor: pointer;
+  background: #fff7e7;
+  border: 2px solid transparent;
+  border-radius: 9px;
+}
+
+.transportOption[data-selected="true"] {
+  color: #fff;
+  background: #b9373f;
+  border-color: #f4ce69;
+}
+
+.transportOption input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.transportOption:has(input:focus-visible) {
+  outline: 3px solid #f4ce69;
+  outline-offset: 3px;
+}
+
+.transportFieldset:disabled .transportOption {
+  cursor: not-allowed;
+  opacity: 0.62;
+}
+
+.transportLabel {
+  display: flex;
+  align-items: center;
+  min-height: 38px;
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.25;
+}
+
+.transportLabel svg {
+  flex: none;
+  width: 19px;
+  height: 19px;
+  margin-right: 7px;
+}
+
+.transportOption > strong {
+  margin-top: 13px;
+  font-size: 21px;
+}
+
+.transportOption > span:not(.transportLabel) {
+  margin-top: 4px;
+  font-size: 14px;
+}
+
+.transportOption small {
+  margin-top: auto;
+  padding-top: 9px;
+  font-size: 10px;
+  line-height: 1.25;
+  opacity: 0.72;
+}
+
+.summary {
+  min-height: 52px;
+  margin-top: 20px;
+  color: #ded6c8;
+  font-size: 14px;
+  line-height: 1.55;
+}
+
+.summary p {
+  margin: 0;
+}
+
+.summary strong {
+  color: #fff8e8;
+}
+
+.error {
+  margin: 13px 0 0;
+  color: #ffb3b7;
+  font-size: 13px;
+  line-height: 1.45;
+}
+
+.retryButton {
+  min-height: 44px;
+  padding: 9px 14px;
+  margin: 10px 0 0;
+  color: #171612;
+  font: 650 13px/1 inherit;
+  cursor: pointer;
+  background: #f4ce69;
+  border: 0;
+  border-radius: 7px;
+}
+
+.googleMapsLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 48px;
+  padding: 10px 17px;
+  margin-top: 17px;
+  color: #171612 !important;
+  font-size: 14px;
+  font-weight: 700;
+  background: #fff7e7;
+  border-radius: 7px;
+}
+
+.googleMapsLink svg {
+  width: 17px;
+  height: 17px;
+  margin-left: 9px;
+}
+
+.pointRow button:hover,
+.retryButton:hover,
+.googleMapsLink:hover {
+  filter: brightness(0.92);
+}
+
+.pointRow button:focus-visible,
+.retryButton:focus-visible,
+.googleMapsLink:focus-visible,
+.factLocationButton:focus-visible {
+  outline: 3px solid #f4ce69;
+  outline-offset: 3px;
+}
+
+.factCell {
+  display: grid;
+  grid-template-columns: 28px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+  min-width: 0;
+  min-height: 118px;
+  padding: 20px;
+  color: #171612;
+  background: transparent;
+  border-right: 1px solid rgb(23 22 18 / 68%);
+  border-bottom: 1px solid rgb(23 22 18 / 68%);
+}
+
+.factIcon {
+  width: 24px;
+  height: 24px;
+  margin-top: 2px;
+}
+
+.factLabel,
+.factValue,
+.factNote {
+  display: block;
+}
+
+.factLabel {
+  font-size: 14px;
+  line-height: 1.2;
+}
+
+.factValue {
+  margin-top: 8px;
+  font-size: 18px;
+  font-weight: 650;
+  line-height: 1.2;
+}
+
+.factLocationButton {
+  min-height: 44px;
+  padding: 7px 9px;
+  margin-top: 6px;
+  color: #fff;
+  font: 650 12px/1.2 inherit;
+  cursor: pointer;
+  background: #b9373f;
+  border: 0;
+  border-radius: 6px;
+}
+
+.factNote {
+  margin-top: 7px;
+  overflow-wrap: anywhere;
+  color: #6c6252;
+  font-size: 10px;
+  line-height: 1.35;
+}
+
+@media (max-width: 720px) {
+  .directions {
+    padding: 20px 16px;
+    border-radius: 9px;
+  }
+
+  .map {
+    height: 280px;
+  }
+
+  .pointRow {
+    grid-template-columns: 22px minmax(0, 1fr);
+  }
+
+  .pointRow button {
+    grid-column: 1 / -1;
+    width: 100%;
+  }
+
+  .connector {
+    display: none;
+  }
+
+  .transportGrid {
+    display: flex;
+    padding: 3px 3px 10px;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+  }
+
+  .transportOption {
+    flex: 0 0 min(76vw, 250px);
+    scroll-snap-align: start;
+  }
+}
+
+@media (max-width: 390px) {
+  .map {
+    height: 240px;
+  }
+
+  .heading {
+    font-size: 23px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .directions *,
+  .factCell * {
+    scroll-behavior: auto !important;
+    transition: none !important;
+  }
+}

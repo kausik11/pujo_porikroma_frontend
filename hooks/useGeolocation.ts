@@ -21,7 +21,12 @@ export function useGeolocation() {
         setLoading(false);
       },
       (geoError) => {
-        setError(geoError.code === geoError.PERMISSION_DENIED ? "Location permission was denied." : "Unable to read your current location.");
+        const message = {
+          [geoError.PERMISSION_DENIED]: "Location permission was denied. You can still open the pandal in Google Maps.",
+          [geoError.POSITION_UNAVAILABLE]: "Your current location is unavailable. Check your device location settings and try again.",
+          [geoError.TIMEOUT]: "Finding your location took too long. Please try again."
+        }[geoError.code] ?? "Unable to read your current location.";
+        setError(message);
         setLoading(false);
       },
       { timeout: 10000, enableHighAccuracy: true }

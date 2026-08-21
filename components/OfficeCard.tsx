@@ -18,10 +18,10 @@ export function OfficeCard({ office }: { office: Location }) {
       <p className="mt-3 line-clamp-2 text-sm text-slate-600">{office.shortDescription || office.fullAddress}</p>
       <div className="mt-4 flex flex-wrap gap-2">
         <Link href={`/locations/${office.slug}`} className="inline-flex items-center gap-2 rounded-md bg-slate-950 px-3 py-2 text-sm font-medium text-white">
-          <MapPin className="h-4 w-4" /> View Office
+          <MapPin className="h-4 w-4" aria-hidden="true" /> View Puja
         </Link>
         <a href={directionsUrl(point)} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 rounded-md border border-slate-300 px-3 py-2 text-sm font-medium text-slate-800">
-          <Navigation className="h-4 w-4" /> Directions
+          <Navigation className="h-4 w-4" aria-hidden="true" /> Directions
         </a>
       </div>
     </article>

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Noto_Sans_Bengali, Noto_Serif_Bengali } from "next/font/google";
+import { PujaWayFooter } from "@/components/pujaway/PujaWayFooter";
 import { QueryProvider } from "@/components/QueryProvider";
 import "./globals.css";
 import "leaflet/dist/leaflet.css";
@@ -16,20 +17,38 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+const bengaliSans = Noto_Sans_Bengali({
+  variable: "--font-bengali-sans",
+  subsets: ["bengali", "latin"],
+  weight: "variable",
+  display: "swap",
+});
+
+const bengaliSerif = Noto_Serif_Bengali({
+  variable: "--font-bengali-serif",
+  subsets: ["bengali", "latin"],
+  weight: "variable",
+  display: "swap",
+});
+
 export const metadata: Metadata = {
-  title: "Office Location & Smart Routing",
-  description: "Find offices, nearby locations and efficient office routes.",
+  title: "PujaWay — Discover Kolkata's Durga Puja",
+  description:
+    "Find nearby pujas, explore Kolkata's most-loved pandals, and build your own Puja route with PujaWay.",
+  applicationName: "PujaWay",
+  keywords: ["Durga Puja", "Kolkata pandals", "Puja hopping", "PujaWay"],
 };
 
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable} ${bengaliSans.variable} ${bengaliSerif.variable} h-full antialiased`}
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         <QueryProvider>{children}</QueryProvider>
+        <PujaWayFooter />
       </body>
     </html>
   );

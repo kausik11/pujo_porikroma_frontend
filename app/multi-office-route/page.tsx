@@ -17,8 +17,8 @@ export default function MultiOfficeRoutePage() {
   const mutation = useMutation({ mutationFn: () => api.multiOffice(origin, [...selected]) });
 
   return (
-    <Shell>
-      <h1 className="text-3xl font-semibold text-slate-950">Plan Multiple Office Visit</h1>
+    <Shell variant="public">
+      <h1 className="text-3xl font-semibold text-slate-950">Plan a Multi-Puja Visit</h1>
       <div className="mt-5 grid gap-4 lg:grid-cols-[360px_1fr]">
         <aside className="rounded-lg border border-slate-200 bg-white p-4">
           <div className="grid grid-cols-2 gap-2">

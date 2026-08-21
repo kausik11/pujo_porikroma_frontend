@@ -1,5 +1,5 @@
 import type { Location, LocationFormInput } from "@/types/location";
-import type { AlongRouteOffice, Coordinate, RouteResult } from "@/types/routing";
+import type { AlongRouteOffice, Coordinate, RouteResult, TravelMode } from "@/types/routing";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:5000/api";
 
@@ -41,7 +41,8 @@ export const api = {
   },
   removePanorama: (id: string) => request<Location>(`/admin/locations/${id}/panorama`, { method: "DELETE" }),
   deletePhoto: (id: string, publicId: string) => request<Location>(`/admin/locations/${id}/gallery/${encodeURIComponent(publicId)}`, { method: "DELETE" }),
-  baseRoute: (origin: Coordinate, destination: Coordinate) => request<{ baseRoute: RouteResult }>("/routes/base-route", body({ origin, destination })),
+  baseRoute: (origin: Coordinate, destination: Coordinate, mode: TravelMode = "DRIVING") =>
+    request<{ baseRoute: RouteResult }>("/routes/base-route", body({ origin, destination, mode })),
   alongRoute: (origin: Coordinate, destination: Coordinate, maxDetourMinutes: number) =>
     request<{ baseRoute: RouteResult; offices: AlongRouteOffice[] }>("/routes/along-route", body({ origin, destination, maxDetourMinutes })),
   multiOffice: (origin: Coordinate, officeIds: string[], destination?: Coordinate) =>

@@ -102,6 +102,7 @@ export function PanoramaViewer({ src, tour }: PanoramaViewerProps) {
         virtualTour?.addEventListener("node-changed", onNodeChange);
         virtualTour?.setNodes(nodes, tour?.startNodeId ?? nodes[0].id);
       } catch (error) {
+        viewerRef.current = null;
         pluginRef.current = null;
         viewer?.destroy();
         viewer = null;
@@ -198,16 +199,16 @@ export function PanoramaViewer({ src, tour }: PanoramaViewerProps) {
         <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/85 via-black/35 to-transparent p-4 text-white">
           <div className="flex flex-col gap-3">
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <TourControl active={isAutorotating} label={isAutorotating ? "Stop autorotation" : "Start autorotation"} onClick={() => setIsAutorotating((value) => !value)}>
+              <TourControl disabled={Boolean(viewerError)} active={isAutorotating} label={isAutorotating ? "Stop autorotation" : "Start autorotation"} onClick={() => setIsAutorotating((value) => !value)}>
                 <RotateCw className="h-4 w-4" />
               </TourControl>
-              <TourControl active={!isMuted} label={isMuted ? "Start sounds" : "Stop sounds"} onClick={() => setIsMuted((value) => !value)}>
+              <TourControl disabled={Boolean(viewerError)} active={!isMuted} label={isMuted ? "Start sounds" : "Stop sounds"} onClick={() => setIsMuted((value) => !value)}>
                 {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
               </TourControl>
-              <TourControl active={showHotspots} label={showHotspots ? "Hide hotspots" : "Show hotspots"} onClick={() => setShowHotspots((value) => !value)}>
+              <TourControl disabled={Boolean(viewerError)} active={showHotspots} label={showHotspots ? "Hide hotspots" : "Show hotspots"} onClick={() => setShowHotspots((value) => !value)}>
                 {showHotspots ? <Eye className="h-4 w-4" /> : <EyeOff className="h-4 w-4" />}
               </TourControl>
-              <TourControl label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"} onClick={() => viewerRef.current?.toggleFullscreen()}>
+              <TourControl disabled={Boolean(viewerError)} label={isFullscreen ? "Exit fullscreen" : "Enter fullscreen"} onClick={() => viewerRef.current?.toggleFullscreen()}>
                 <Maximize2 className="h-4 w-4" />
               </TourControl>
               <TourControl disabled label="Gyroscope requires device support">
@@ -256,7 +257,7 @@ export function PanoramaViewer({ src, tour }: PanoramaViewerProps) {
                   key={node.id}
                   type="button"
                   onClick={() => navigateToNode(node.id)}
-                  className={`inline-flex min-h-10 items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition ${
+                  className={`inline-flex min-h-11 items-center gap-2 rounded-md border px-3 py-2 text-sm font-medium transition ${
                     activeNodeId === node.id
                       ? "border-amber-300 bg-amber-300 text-slate-950"
                       : "border-slate-700 bg-slate-900 text-slate-200 hover:border-slate-500"
@@ -282,7 +283,7 @@ function TourControl({ active, disabled, label, onClick, children }: { active?: 
       onClick={onClick}
       title={label}
       aria-label={label}
-      className={`flex h-10 w-10 items-center justify-center rounded-full border text-white shadow-lg backdrop-blur transition ${
+      className={`flex h-11 w-11 items-center justify-center rounded-full border text-white shadow-lg backdrop-blur transition ${
         active ? "border-amber-300 bg-amber-300/25" : "border-white/15 bg-black/45 hover:bg-black/70"
       } ${disabled ? "cursor-not-allowed opacity-40" : ""}`}
     >

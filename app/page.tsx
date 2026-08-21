@@ -1,25 +1,26 @@
 import type { Metadata } from "next";
-import { Noto_Sans_Bengali, Noto_Serif_Bengali } from "next/font/google";
 import { headers } from "next/headers";
+import { unstable_rethrow } from "next/navigation";
 import { PujaWayHome } from "@/components/PujaWayHome";
-
-const bengaliSans = Noto_Sans_Bengali({
-  variable: "--font-bengali-sans",
-  subsets: ["bengali", "latin"],
-  weight: "variable",
-  display: "swap",
-});
-
-const bengaliSerif = Noto_Serif_Bengali({
-  variable: "--font-bengali-serif",
-  subsets: ["bengali", "latin"],
-  weight: "variable",
-  display: "swap",
-});
+import {
+  pujaCardDataFromLocation,
+  type PujaCardData,
+} from "@/components/pujaway/PujaCard";
+import { getFeaturedPujas } from "@/services/puja-data";
 
 const pageTitle = "PujaWay — Discover Kolkata's Durga Puja";
 const pageDescription =
   "Find nearby pujas, explore Kolkata's most-loved pandals, and build your own Puja route with PujaWay.";
+const preferredFeaturedPujaSlugs = [
+  "ekdalia-evergreen",
+  "triangular-park",
+  "shyambazar-sarbojanin",
+  "santosh-mitra-square",
+] as const;
+const monochromeFeaturedPujaSlugs = new Set<string>([
+  "ekdalia-evergreen",
+  "santosh-mitra-square",
+]);
 
 export async function generateMetadata(): Promise<Metadata> {
   const requestHeaders = await headers();
@@ -52,10 +53,27 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function Home() {
+export default async function Home() {
+  let featuredPujas: PujaCardData[] = [];
+  let featuredLoadFailed = false;
+
+  try {
+    const featuredLocations = await getFeaturedPujas(preferredFeaturedPujaSlugs);
+    featuredPujas = featuredLocations.map((location) =>
+      pujaCardDataFromLocation(location, {
+        monochrome: monochromeFeaturedPujaSlugs.has(location.slug),
+      }),
+    );
+  } catch (error) {
+    unstable_rethrow(error);
+    console.error("Unable to load featured Puja locations for the homepage.", error);
+    featuredLoadFailed = true;
+  }
+
   return (
-    <div className={`${bengaliSans.variable} ${bengaliSerif.variable}`}>
-      <PujaWayHome />
-    </div>
+    <PujaWayHome
+      featuredPujas={featuredPujas}
+      featuredLoadFailed={featuredLoadFailed}
+    />
   );
 }

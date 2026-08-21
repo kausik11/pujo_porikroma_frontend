@@ -32,6 +32,13 @@ textarea {
   border-radius: 8px;
 }
 
+.leaflet-control-zoom a {
+  width: 44px !important;
+  height: 44px !important;
+  font-size: 24px !important;
+  line-height: 44px !important;
+}
+
 .puja-tour-hotspot .psv-virtual-tour-arrow {
   background: radial-gradient(circle at 50% 50%, rgba(251, 191, 36, 0.95) 0 24%, rgba(15, 23, 42, 0.82) 26% 45%, rgba(251, 191, 36, 0.18) 47% 100%);
   border: 2px solid rgba(255, 255, 255, 0.9);
@@ -52,5 +59,11 @@ textarea {
   }
   100% {
     box-shadow: 0 0 0 0 rgba(251, 191, 36, 0), 0 12px 32px rgba(0, 0, 0, 0.36);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .puja-tour-hotspot .psv-virtual-tour-arrow {
+    animation: none;
   }
 }

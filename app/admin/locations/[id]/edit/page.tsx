@@ -11,8 +11,8 @@ export default function EditLocationPage({ params }: { params: Promise<{ id: str
   const { data, isLoading, error } = useQuery({ queryKey: ["admin-location", id], queryFn: () => api.adminLocation(id) });
   return (
     <Shell>
-      <h1 className="mb-5 text-3xl font-semibold text-slate-950">Edit Location</h1>
-      {isLoading && <p className="rounded-lg bg-white p-4">Loading location...</p>}
+      <h1 className="mb-5 text-3xl font-semibold text-slate-950">Edit Puja</h1>
+      {isLoading && <p className="rounded-lg bg-white p-4">Loading Puja...</p>}
       {error && <p className="rounded-lg bg-red-50 p-4 text-red-700">{(error as Error).message}</p>}
       {data && <LocationForm location={data} />}
     </Shell>
