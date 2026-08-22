@@ -37,7 +37,7 @@ export function PanoramaViewer({ src, tour }: PanoramaViewerProps) {
   const pluginRef = useRef<VirtualTourPlugin | null>(null);
   const [currentNodeId, setCurrentNodeId] = useState<string>();
   const [viewerError, setViewerError] = useState("");
-  const [isAutorotating, setIsAutorotating] = useState(false);
+  const [isAutorotating, setIsAutorotating] = useState(true);
   const [isMuted, setIsMuted] = useState(false);
   const [showHotspots, setShowHotspots] = useState(true);
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -113,7 +113,7 @@ export function PanoramaViewer({ src, tour }: PanoramaViewerProps) {
     return () => {
       disposed = true;
       window.clearTimeout(timer);
-      setIsAutorotating(false);
+      setIsAutorotating(true);
       viewerRef.current = null;
       pluginRef.current = null;
       virtualTour?.removeEventListener("node-changed", onNodeChange);

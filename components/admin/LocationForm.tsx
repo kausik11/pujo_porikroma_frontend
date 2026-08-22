@@ -1,9 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import NextImage from "next/image";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useMutation } from "@tanstack/react-query";
-import { Save } from "lucide-react";
+import { CheckCircle2, ImagePlus, Save, Trash2, UploadCloud } from "lucide-react";
 import { DynamicOfficeMap } from "@/components/maps/DynamicOfficeMap";
 import { api } from "@/services/api";
 import type { CrowdLevel, Location, LocationFormInput, Region } from "@/types/location";
@@ -65,6 +66,17 @@ function optionalNumber(value: string) {
   return Number.isFinite(number) ? number : undefined;
 }
 
+function fileSizeLabel(file: File) {
+  const units = ["B", "KB", "MB", "GB"];
+  let size = file.size;
+  let unitIndex = 0;
+  while (size >= 1024 && unitIndex < units.length - 1) {
+    size /= 1024;
+    unitIndex += 1;
+  }
+  return `${size.toFixed(unitIndex === 0 ? 0 : 1)} ${units[unitIndex]}`;
+}
+
 function formFromLocation(location?: Location): LocationFormInput {
   if (!location) return empty;
   return {
@@ -118,7 +130,10 @@ export function LocationForm({ location }: { location?: Location }) {
   );
   const [photos, setPhotos] = useState<File[]>([]);
   const [panorama, setPanorama] = useState<File | null>(null);
+  const [currentPanorama, setCurrentPanorama] = useState(location?.panorama360);
+  const [panoramaPreviewUrl, setPanoramaPreviewUrl] = useState("");
   const [aspectWarning, setAspectWarning] = useState("");
+  const panoramaPreviewUrlRef = useRef("");
 
   const save = useMutation({
     mutationFn: async () => {
@@ -130,22 +145,49 @@ export function LocationForm({ location }: { location?: Location }) {
     onSuccess: () => router.push("/admin/locations")
   });
 
+  const removePanorama = useMutation({
+    mutationFn: async () => {
+      if (!location) return undefined;
+      return api.removePanorama(location._id);
+    },
+    onSuccess: (updated) => {
+      setCurrentPanorama(updated?.panorama360);
+      setPanorama(null);
+      router.refresh();
+    }
+  });
+
   function update<K extends keyof LocationFormInput>(key: K, value: LocationFormInput[K]) {
     setForm((current) => ({ ...current, [key]: value }));
   }
 
   function onPanorama(file: File | null) {
+    if (panoramaPreviewUrlRef.current) {
+      URL.revokeObjectURL(panoramaPreviewUrlRef.current);
+      panoramaPreviewUrlRef.current = "";
+    }
     setPanorama(file);
+    setPanoramaPreviewUrl("");
     setAspectWarning("");
     if (!file) return;
+    const previewUrl = URL.createObjectURL(file);
+    panoramaPreviewUrlRef.current = previewUrl;
+    setPanoramaPreviewUrl(previewUrl);
     const image = new Image();
     image.onload = () => {
       const ratio = image.width / image.height;
       if (Math.abs(ratio - 2) > 0.25) setAspectWarning("This panorama is not close to a 2:1 equirectangular aspect ratio.");
       URL.revokeObjectURL(image.src);
     };
+    image.onerror = () => URL.revokeObjectURL(image.src);
     image.src = URL.createObjectURL(file);
   }
+
+  useEffect(() => {
+    return () => {
+      if (panoramaPreviewUrlRef.current) URL.revokeObjectURL(panoramaPreviewUrlRef.current);
+    };
+  }, []);
 
   return (
     <form onSubmit={(event) => { event.preventDefault(); save.mutate(); }} className="space-y-6">
@@ -298,14 +340,90 @@ export function LocationForm({ location }: { location?: Location }) {
         </div>
       </section>
       <section className="rounded-lg border border-slate-200 bg-white p-4">
-        <h2 className="text-xl font-semibold">Puja Gallery</h2>
-        <input multiple accept="image/*" type="file" onChange={(event) => setPhotos(Array.from(event.target.files ?? []))} className="mt-4" />
-        {photos.length > 0 && <div className="mt-3 text-sm text-slate-600">{photos.length} image(s) selected.</div>}
-        <h2 className="mt-6 text-xl font-semibold">360 Panorama</h2>
-        <input accept="image/*" type="file" onChange={(event) => onPanorama(event.target.files?.[0] ?? null)} className="mt-4" />
-        {aspectWarning && <p className="mt-2 rounded-md bg-amber-50 p-2 text-sm text-amber-800">{aspectWarning}</p>}
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <h2 className="text-xl font-semibold">Puja Gallery</h2>
+            <p className="mt-1 text-sm text-slate-600">Add regular Puja photos for the gallery carousel.</p>
+          </div>
+          {photos.length > 0 ? (
+            <span className="inline-flex w-fit items-center gap-2 rounded-full bg-emerald-50 px-3 py-1 text-sm font-medium text-emerald-700">
+              <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
+              {photos.length} selected
+            </span>
+          ) : null}
+        </div>
+        <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed border-slate-300 bg-slate-50 px-6 py-8 text-center transition hover:border-slate-500 hover:bg-white focus-within:border-slate-950 focus-within:ring-2 focus-within:ring-slate-950/10">
+          <input multiple accept="image/*" type="file" onChange={(event) => setPhotos(Array.from(event.target.files ?? []))} className="sr-only" />
+          <span className="grid h-12 w-12 place-items-center rounded-full bg-white text-slate-950 shadow-sm">
+            <ImagePlus className="h-6 w-6" aria-hidden="true" />
+          </span>
+          <span className="mt-3 text-sm font-semibold text-slate-950">Upload gallery images</span>
+          <span className="mt-1 text-sm text-slate-500">Choose multiple JPG, PNG, or WebP files</span>
+        </label>
+        {photos.length > 0 ? (
+          <div className="mt-3 flex flex-wrap gap-2">
+            {photos.map((photo) => (
+              <span key={`${photo.name}-${photo.size}`} className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-700">
+                {photo.name} · {fileSizeLabel(photo)}
+              </span>
+            ))}
+          </div>
+        ) : null}
+
+        <div className="mt-8 border-t border-slate-200 pt-6">
+          <h2 className="text-xl font-semibold">360 Panorama</h2>
+          <p className="mt-1 text-sm text-slate-600">Upload one 2:1 equirectangular panorama image. This powers the public 360 viewer.</p>
+        </div>
+        {currentPanorama ? (
+          <div className="mt-4 overflow-hidden rounded-lg border border-slate-200 bg-slate-50">
+            <div className="relative aspect-[2/1] w-full">
+              <NextImage src={currentPanorama.url} alt={currentPanorama.alt ?? "Current 360 panorama"} fill sizes="(min-width: 768px) 720px, 100vw" className="object-cover" />
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3">
+              <p className="text-sm text-slate-600">Current 360 panorama is uploaded.</p>
+              <button
+                type="button"
+                onClick={() => removePanorama.mutate()}
+                disabled={removePanorama.isPending}
+                className="inline-flex min-h-10 items-center gap-2 rounded-md border border-red-200 bg-white px-3 py-2 text-sm font-medium text-red-700 disabled:opacity-60"
+              >
+                <Trash2 className="h-4 w-4" aria-hidden="true" />
+                {removePanorama.isPending ? "Removing..." : "Remove panorama"}
+              </button>
+            </div>
+          </div>
+        ) : null}
+        <label className="mt-4 grid cursor-pointer gap-4 rounded-lg border-2 border-dashed border-amber-300 bg-amber-50/50 p-4 transition hover:border-amber-500 hover:bg-amber-50 focus-within:border-slate-950 focus-within:ring-2 focus-within:ring-slate-950/10 md:grid-cols-[minmax(260px,0.82fr)_minmax(0,1.18fr)]">
+          <input accept="image/*" type="file" onChange={(event) => onPanorama(event.target.files?.[0] ?? null)} className="sr-only" />
+          <div className="relative aspect-[2/1] overflow-hidden rounded-md border border-amber-200 bg-white">
+            {panoramaPreviewUrl ? (
+              <div className="absolute inset-0 bg-cover bg-center" style={{ backgroundImage: `url("${panoramaPreviewUrl}")` }} />
+            ) : (
+              <div className="flex h-full flex-col items-center justify-center p-5 text-center text-amber-900">
+                <UploadCloud className="h-9 w-9" aria-hidden="true" />
+                <span className="mt-2 text-sm font-semibold">Panorama preview</span>
+              </div>
+            )}
+          </div>
+          <div className="flex flex-col justify-center">
+            <span className="text-base font-semibold text-slate-950">{panorama ? "Panorama ready to upload" : "Choose 360 panorama image"}</span>
+            <span className="mt-2 text-sm leading-6 text-slate-600">
+              Best result: wide 2:1 image, for example 4000 x 2000 px. Replacing the file here will update the public 360 view after saving.
+            </span>
+            {panorama ? (
+              <span className="mt-3 inline-flex w-fit items-center gap-2 rounded-full bg-white px-3 py-1 text-sm font-medium text-slate-700">
+                <CheckCircle2 className="h-4 w-4 text-emerald-600" aria-hidden="true" />
+                {panorama.name} · {fileSizeLabel(panorama)}
+              </span>
+            ) : (
+              <span className="mt-3 inline-flex w-fit rounded-full bg-white px-3 py-1 text-sm font-semibold text-amber-900">Click to attach file</span>
+            )}
+          </div>
+        </label>
+        {aspectWarning && <p className="mt-3 rounded-md bg-amber-50 p-3 text-sm text-amber-800">{aspectWarning}</p>}
       </section>
       {save.error && <p className="rounded-lg bg-red-50 p-4 text-red-700">{save.error.message}</p>}
+      {removePanorama.error && <p className="rounded-lg bg-red-50 p-4 text-red-700">{removePanorama.error.message}</p>}
       <button disabled={save.isPending} className="inline-flex min-h-11 items-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-medium text-white disabled:opacity-60"><Save className="h-4 w-4" /> Save Puja</button>
     </form>
   );

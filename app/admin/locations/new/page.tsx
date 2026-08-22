@@ -17,7 +17,6 @@ export default function NewLocationPage() {
         </Link>
         <h1 className="text-3xl font-semibold text-slate-950">Add a Puja</h1>
         <p className="mt-2 max-w-3xl text-sm leading-6 text-slate-600">Create the public pandal profile first, then upload its gallery through the supported PujaWay media flow.</p>
-        <p className="mt-3 rounded-lg border border-amber-200 bg-amber-50 p-3 text-sm text-amber-900">This admin panel does not have authentication yet. Do not expose it publicly until access control is added.</p>
       </div>
       <CreatePujaForm />
     </Shell>

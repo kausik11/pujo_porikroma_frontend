@@ -1,5 +1,27 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Li Alinur Subas Unicode";
+  src:
+    url("/fonts/Li-Alinur-Subas-Unicode.woff2") format("woff2"),
+    url("/fonts/Li-Alinur-Subas-Unicode.woff") format("woff"),
+    url("/fonts/Li-Alinur-Subas-Unicode.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Li Ador Noirrit VR";
+  src:
+    url("/fonts/Li-Ador-Noirrit-VR.woff2") format("woff2"),
+    url("/fonts/Li-Ador-Noirrit-VR.woff") format("woff"),
+    url("/fonts/Li-Ador-Noirrit-VR.ttf") format("truetype");
+  font-weight: 300 400;
+  font-style: normal;
+  font-display: swap;
+}
+
 :root {
   --background: #f8fafc;
   --foreground: #172033;
@@ -16,6 +38,11 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
+}
+
+html:has([data-pujaway-flash-screen]),
+body:has([data-pujaway-flash-screen]) {
+  overflow: hidden;
 }
 
 button,
@@ -62,8 +89,57 @@ textarea {
   }
 }
 
+@keyframes flash-brand-fade {
+  0% {
+    opacity: 0;
+  }
+
+  22% {
+    opacity: 1;
+  }
+
+  78% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes flash-brand-drop {
+  0% {
+    transform: translate3d(0, -56vh, 0);
+  }
+
+  70%,
+  100% {
+    transform: translate3d(0, -10vh, 0);
+  }
+}
+
+@keyframes flash-screen-exit {
+  0%,
+  82% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .puja-tour-hotspot .psv-virtual-tour-arrow {
     animation: none;
   }
+
+  [data-pujaway-flash-screen],
+  [data-pujaway-flash-kalka],
+  [data-pujaway-flash-brand] {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0ms !important;
+  }
+
 }

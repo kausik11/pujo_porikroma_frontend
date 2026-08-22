@@ -19,7 +19,7 @@ export default function AdminLocationsPage() {
       <div className="flex flex-col items-start justify-between gap-3 sm:flex-row sm:items-center">
         <div>
           <h1 className="text-3xl font-semibold text-slate-950">Pujas</h1>
-          <p className="mt-2 text-sm text-amber-800">Unauthenticated admin route. Add auth before public production exposure.</p>
+          <p className="mt-2 text-sm text-slate-600">Create, edit, preview, and remove Puja listings.</p>
         </div>
         <Link href="/admin/locations/new" className="inline-flex min-h-11 items-center gap-2 rounded-md bg-slate-950 px-4 py-2 text-sm font-medium text-white"><Plus className="h-4 w-4" aria-hidden="true" /> Add Puja</Link>
       </div>

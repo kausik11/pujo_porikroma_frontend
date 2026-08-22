@@ -9,6 +9,7 @@ async function request<T>(path: string, init?: RequestInit): Promise<T> {
   const response = await fetch(`${API_URL}${path}`, {
     ...init,
     headers: init?.body instanceof FormData ? init.headers : { "Content-Type": "application/json", ...init?.headers },
+    credentials: "include",
     cache: "no-store"
   });
   const json = (await response.json()) as ApiResponse<T>;
