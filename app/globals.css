@@ -40,6 +40,28 @@ body {
   font-family: var(--font-geist-sans), Arial, Helvetica, sans-serif;
 }
 
+html {
+  scrollbar-color: #8b0000 #fbf0d8;
+}
+
+::-webkit-scrollbar {
+  width: 12px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fbf0d8;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #8b0000;
+  border: 2px solid #fbf0d8;
+  border-radius: 999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a20b0b;
+}
+
 html:has([data-pujaway-flash-screen]),
 body:has([data-pujaway-flash-screen]) {
   overflow: hidden;
@@ -130,6 +152,20 @@ textarea {
   }
 }
 
+[data-pujaway-marquee-track] {
+  animation: pujaway-marquee 26s linear infinite;
+}
+
+@keyframes pujaway-marquee {
+  from {
+    transform: translate3d(0, 0, 0);
+  }
+
+  to {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .puja-tour-hotspot .psv-virtual-tour-arrow {
     animation: none;
@@ -137,7 +173,8 @@ textarea {
 
   [data-pujaway-flash-screen],
   [data-pujaway-flash-kalka],
-  [data-pujaway-flash-brand] {
+  [data-pujaway-flash-brand],
+  [data-pujaway-marquee-track] {
     animation-duration: 0.01ms !important;
     animation-delay: 0ms !important;
   }

@@ -5,10 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
   ArrowDown,
-  Flame,
   MapPin,
-  Utensils,
-  UsersRound,
 } from "lucide-react";
 import {
   type FormEvent,
@@ -20,6 +17,8 @@ import {
   useTransition,
 } from "react";
 import { type PujaCardData } from "@/components/pujaway/PujaCard";
+import { DurgaPujaDays } from "@/components/pujaway/DurgaPujaDays";
+import { LiveAroundKolkata } from "@/components/pujaway/LiveAroundKolkata";
 import { PujaWayBrand } from "@/components/pujaway/PujaWayBrand";
 import { PujaWayHeader } from "@/components/pujaway/PujaWayHeader";
 import type { Region } from "@/types/location";
@@ -85,9 +84,9 @@ const styles = {
   regionSelect:
     "relative flex-none after:pointer-events-none after:absolute after:right-[23px] after:top-1/2 after:size-2 after:-translate-y-[68%] after:rotate-45 after:border-b-[1.5px] after:border-r-[1.5px] after:border-white after:content-[''] [&_select]:h-[54px] [&_select]:w-[162px] [&_select]:appearance-none [&_select]:rounded-[10px] [&_select]:border-0 [&_select]:bg-[#171715] [&_select]:py-0 [&_select]:pl-[29px] [&_select]:pr-12 [&_select]:text-[21px] [&_select]:font-[450] [&_select]:leading-none [&_select]:text-white max-[720px]:[&_select]:h-[50px] max-[720px]:[&_select]:w-[150px] max-[720px]:[&_select]:text-[18px]",
   featuredCarousel:
-    "relative left-1/2 ml-[-50vw] w-screen cursor-grab touch-pan-y select-none overflow-hidden py-[74px] [mask-image:linear-gradient(90deg,transparent_0,#000_9%,#000_91%,transparent_100%)] [scrollbar-width:none] active:cursor-grabbing max-[720px]:py-11 [&::-webkit-scrollbar]:hidden",
+    "relative left-1/2 ml-[-50vw] min-h-[560px] w-screen cursor-grab touch-pan-y select-none overflow-hidden bg-[url('/images/Flash_screen_kalka-transparent.png')] bg-[length:min(52vw,620px)_auto] bg-center bg-no-repeat py-[74px] [mask-image:linear-gradient(90deg,transparent_0,#000_9%,#000_91%,transparent_100%)] [scrollbar-width:none] active:cursor-grabbing max-[720px]:min-h-[460px] max-[720px]:bg-[length:min(88vw,360px)_auto] max-[720px]:py-11 [&::-webkit-scrollbar]:hidden",
   featuredCarouselTrack:
-    "flex w-max items-center gap-16 max-[720px]:gap-8",
+    "relative z-10 flex w-max items-center gap-16 py-8 max-[720px]:gap-8 max-[720px]:py-6",
   featuredCarouselCard:
     "group relative isolate mx-2 h-[370px] w-[438px] shrink-0 overflow-hidden rounded-[10px] bg-[#211b14] text-white shadow-[0_1px_0_rgb(0_0_0_/_18%)] transition-[transform,filter,box-shadow] duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] will-change-transform max-[720px]:mx-1 max-[720px]:h-[325px] max-[720px]:w-[320px]",
   featuredCarouselCardLarge:
@@ -104,10 +103,22 @@ const styles = {
     "col-span-full m-0 flex min-h-[120px] flex-col items-center justify-center gap-3.5 rounded-[11px] border border-[rgb(23_22_18_/_12%)] bg-white/35 p-8 text-center text-[18px] text-[#5b5548]",
   pujaRetry:
     "min-h-[42px] cursor-pointer rounded-full border border-[#171612] bg-[#171612] px-[18px] py-[9px] font-bold text-[#fff8e9] disabled:cursor-wait disabled:opacity-65 hover:not-disabled:bg-[#ffdb72] hover:not-disabled:text-[#171612] focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-3 focus-visible:outline-[#d54747]",
+  marqueeSection:
+    "relative isolate mt-26px mb-20 overflow-hidden before:absolute before:inset-0 before:z-[-1] before:bg-[url('/images/Flash_screen_kalka-transparent.png')] before:bg-[length:360px_auto] before:bg-center before:bg-no-repeat before:opacity-[0.09] before:mix-blend-luminosity before:content-[''] max-[720px]:mt-[-58px] max-[720px]:mb-12",
+  marqueeEdge:
+    "relative h-[55px] bg-[#c9bea5] [mask-image:url('/images/up_down.png')] [mask-position:center] [mask-repeat:repeat-x] [mask-size:auto_45px] max-[720px]:h-[34px] max-[720px]:[mask-size:auto_34px]",
+  marqueeEdgeTop:
+    "mt-[26px] z-0 h-[62px] w-[1582px] max-w-none bg-[#c9bea5] opacity-80 mix-blend-multiply [mask-image:url('/images/up_down.png')] [mask-position:center] [mask-repeat:repeat-x] [mask-size:auto_62px] max-[720px]:mt-4 max-[720px]:left-[-58px] max-[720px]:h-[40px] max-[720px]:w-[1020px] max-[720px]:[mask-size:auto_40px]",
+  marqueeEdgeBottom:
+    "bottom-[34px] left-1/2 z-0 ml-[-50vw] h-[62px] w-screen max-w-none bg-[#c9bea5] opacity-80 mix-blend-multiply scale-y-[-1] [mask-image:url('/images/up_down.png')] [mask-position:center] [mask-repeat:repeat-x] [mask-size:auto_62px] max-[720px]:bottom-5 max-[720px]:h-[40px] max-[720px]:[mask-size:auto_40px]",
+  marqueeBand:
+    "relative z-[2] mt-[-32px] overflow-hidden bg-[#7b0707] py-[42px] text-white shadow-[inset_0_1px_0_rgb(255_255_255_/_12%),inset_0_-1px_0_rgb(0_0_0_/_22%)] max-[720px]:mt-[-28px] max-[720px]:py-7",
+  marqueeTrack:
+    "relative z-[3] flex w-max items-center whitespace-nowrap text-[35px] font-[650] leading-none tracking-[0.01em] max-[720px]:text-[21px] [&_span]:px-4",
   promoBanner: "relative isolate h-[650px] overflow-hidden text-[#71120f] max-[720px]:h-[620px]",
-  bannerImage: "z-[-3] translate-x-[18%] scale-[1.18] object-cover object-[center_48%] max-[720px]:translate-x-[20%] max-[720px]:scale-[1.2] max-[720px]:object-[69%_center]",
+  bannerImage: "z-[-3] object-contain object-center",
   bannerVeil:
-    "absolute inset-0 z-[-2] bg-[linear-gradient(90deg,#fff4d6_0%,rgb(255_244_214_/_98%)_29%,rgb(255_244_214_/_85%)_48%,rgb(255_244_214_/_16%)_68%,transparent_78%),linear-gradient(180deg,rgb(142_43_17_/_5%),rgb(111_19_14_/_16%))] max-[980px]:bg-[linear-gradient(90deg,#fff4d6_0%,rgb(255_244_214_/_94%)_49%,rgb(255_244_214_/_32%)_76%,transparent)] max-[720px]:bg-[linear-gradient(180deg,#fff4d6_0%,rgb(255_244_214_/_92%)_45%,rgb(76_20_10_/_22%)_72%,rgb(33_11_7_/_52%))]",
+    "absolute inset-0 z-[-2]  max-[720px]:bg-[linear-gradient(180deg,#fff4d6_0%,rgb(255_244_214_/_92%)_45%,rgb(76_20_10_/_22%)_72%,rgb(33_11_7_/_52%))]",
   bannerCopy:
     "absolute left-[max(48px,calc((100vw_-_1230px)_/_2))] top-[39px] w-[515px] max-[720px]:left-[25px] max-[720px]:top-10 max-[720px]:w-[calc(100%_-_50px)]",
   bannerBrand: "absolute left-[455px] top-0 text-[#211c15] max-[980px]:left-80 max-[720px]:left-auto max-[720px]:right-0",
@@ -137,15 +148,16 @@ const styles = {
   introVideo: "absolute inset-0 h-full w-full object-cover",
   storySection: "bg-[#fff7e7] pt-[30px] pb-[218px] max-[720px]:pt-0 max-[720px]:pb-[125px]",
   storyGrid: "grid grid-cols-[minmax(0,0.96fr)_minmax(0,1.04fr)] items-start gap-[93px] max-[980px]:grid-cols-1 max-[980px]:gap-20 max-[720px]:gap-[62px]",
-  storyCopy: "[&_h2]:m-0 [&_h2]:max-w-[570px] [&_h2]:text-[40px] [&_h2]:font-[390] [&_h2]:leading-[1.38] [&_h2]:tracking-[-1.35px] [&_h2_strong]:font-[610] [&_h2_strong]:text-[#d21419] [&>p:nth-of-type(2)]:mt-[45px] [&>p:nth-of-type(2)]:max-w-[480px] [&>p:nth-of-type(2)]:text-[27px] [&>p:nth-of-type(2)]:leading-[1.38] max-[980px]:[&_h2]:max-w-[720px] max-[980px]:[&>p:nth-of-type(2)]:max-w-[720px] max-[720px]:[&_h2]:text-[31px] max-[720px]:[&_h2]:leading-[1.44] max-[720px]:[&>p:nth-of-type(2)]:text-[23px]",
-  storyFlow: "mt-[45px] flex w-fit flex-col items-center text-[16px] max-[720px]:items-start max-[720px]:text-[13px] [&_svg]:my-5 [&_svg]:size-[22px] [&_svg]:stroke-[1.8px] max-[720px]:[&_svg]:ml-[45%]",
-  storyVisual: "relative isolate h-[607px] overflow-hidden rounded-[10px] bg-[#2d1c12] text-white max-[980px]:h-[640px] max-[720px]:h-[560px]",
+  storyLabel: "mb-[58px] mt-0 inline-flex min-h-[58px] min-w-[194px] items-center justify-center rounded-[10px] bg-[linear-gradient(180deg,#a31a1a_0%,#760000_100%)] px-10 text-[25px] font-[560] leading-none tracking-[0] text-[#fff7e7] shadow-[0_16px_32px_rgb(118_0_0_/_12%)] max-[720px]:mb-10 max-[720px]:min-h-[52px] max-[720px]:min-w-[168px] max-[720px]:px-8 max-[720px]:text-[22px]",
+  storyCopy: "[&_h2]:m-0 [&_h2]:max-w-[640px] [&_h2]:text-[clamp(38px,3.55vw,49px)] [&_h2]:font-[390] [&_h2]:leading-[1.28] [&_h2]:tracking-[-1.1px] [&_h2_strong]:font-[650] [&_h2_strong]:text-[#d21419] [&>p:nth-of-type(2)]:mt-[50px] [&>p:nth-of-type(2)]:max-w-[540px] [&>p:nth-of-type(2)]:text-[30px] [&>p:nth-of-type(2)]:font-[390] [&>p:nth-of-type(2)]:leading-[1.34] [&>p:nth-of-type(2)]:tracking-[-0.7px] max-[980px]:[&_h2]:max-w-[780px] max-[980px]:[&>p:nth-of-type(2)]:max-w-[700px] max-[720px]:[&_h2]:text-[31px] max-[720px]:[&_h2]:leading-[1.38] max-[720px]:[&>p:nth-of-type(2)]:mt-8 max-[720px]:[&>p:nth-of-type(2)]:text-[22px] max-[720px]:[&>p:nth-of-type(2)]:leading-[1.4]",
+  storyFlow: "mt-[48px] flex w-fit flex-col items-center text-[21px] font-[650] leading-[1.25] tracking-[-0.35px] max-[720px]:items-start max-[720px]:text-[15px] [&_svg]:my-5 [&_svg]:size-[25px] [&_svg]:stroke-[2px] max-[720px]:[&_svg]:my-4 max-[720px]:[&_svg]:ml-[45%]",
+  storyVisual: "relative isolate mt-24 h-[607px] overflow-hidden rounded-[10px] bg-[#2d1c12] text-white max-[980px]:mt-0 max-[980px]:h-[640px] max-[720px]:h-[560px]",
   storyImage: "z-[-3] object-cover",
-  storyVisualShade: "absolute inset-0 z-[-2] bg-[linear-gradient(180deg,rgb(10_9_7_/_19%),rgb(9_8_6_/_49%)),linear-gradient(90deg,rgb(0_0_0_/_36%),transparent_68%)]",
-  storyVisualTop: "absolute left-[92px] right-12 top-[67px] flex items-start justify-between gap-6 max-[720px]:left-7 max-[720px]:right-7 max-[720px]:top-[38px] [&_h3]:m-0 [&_h3]:text-[53px] [&_h3]:font-semibold [&_h3]:leading-[1.13] [&_h3]:tracking-[-2px] max-[720px]:[&_h3]:text-[39px]",
-  storyBrand: "max-[720px]:hidden [&>span:first-child]:text-[27px]",
-  storyVisualMessage: "absolute left-[94px] right-[70px] top-[250px] border-t-[3px] border-white/90 pt-[23px] max-[720px]:left-[30px] max-[720px]:right-[30px] max-[720px]:top-[195px] [&_p]:m-0 [&_p]:max-w-[420px] [&_p]:text-[18px] [&_p]:leading-[1.42] [&_b]:mt-[43px] [&_b]:block [&_b]:text-[27px] [&_b]:leading-[1.25] max-[720px]:[&_b]:mt-[35px] max-[720px]:[&_b]:text-[23px]",
-  poweredBy: "absolute bottom-[33px] right-[49px] m-0 text-right text-[14px] [&_strong]:mt-2 [&_strong]:block [&_strong]:text-[26px]",
+  storyVisualShade: "absolute inset-0 z-[-2] bg-[linear-gradient(180deg,rgb(39_16_9_/_18%),rgb(113_14_6_/_62%)),linear-gradient(90deg,rgb(96_11_5_/_70%),rgb(54_14_10_/_28%)_58%,rgb(22_10_8_/_42%))]",
+  storyVisualTop: "absolute left-[74px] right-[64px] top-[68px] flex items-start justify-between gap-8 max-[720px]:left-7 max-[720px]:right-7 max-[720px]:top-[38px] [&_h3]:m-0 [&_h3]:text-[clamp(40px,3.45vw,52px)] [&_h3]:font-[650] [&_h3]:leading-[1.1] [&_h3]:tracking-[-1.35px] max-[720px]:[&_h3]:text-[31px] max-[720px]:[&_h3]:tracking-[-0.8px]",
+  storyBrand: "mt-1.5 max-[720px]:hidden [&>span:first-child]:text-[24px] [&>span:first-child]:tracking-[-1.25px] [&>span:last-child]:mt-1.5 [&>span:last-child]:text-[8px]",
+  storyVisualMessage: "absolute left-[76px] right-[70px] top-[270px] border-t-[2px] border-white/90 pt-[22px] max-[720px]:left-[30px] max-[720px]:right-[30px] max-[720px]:top-[178px] [&_p]:m-0 [&_p]:max-w-[420px] [&_p]:text-[18px] [&_p]:font-[390] [&_p]:leading-[1.32] [&_p]:tracking-[-0.15px] [&_b]:mt-[36px] [&_b]:block [&_b]:text-[24px] [&_b]:font-[650] [&_b]:leading-[1.25] [&_b]:tracking-[-0.4px] max-[720px]:[&_p]:text-[15px] max-[720px]:[&_b]:mt-[24px] max-[720px]:[&_b]:text-[19px]",
+  poweredBy: "absolute bottom-[35px] right-[58px] m-0 flex flex-col items-start text-[16px] font-[390] leading-none tracking-[-0.15px] text-[#fff8e8] max-[720px]:bottom-7 max-[720px]:right-7 max-[720px]:text-[12px] [&_img]:mt-3 [&_img]:h-auto [&_img]:w-[116px] max-[720px]:[&_img]:w-[92px]",
   contactSection: "bg-[#fff7e7] pt-[158px] pb-[248px] max-[720px]:pt-[95px] max-[720px]:pb-[130px]",
   contactGrid: "grid grid-cols-[minmax(0,1.06fr)_minmax(0,0.94fr)] gap-[190px] max-[1120px]:gap-[100px] max-[980px]:grid-cols-1 max-[980px]:gap-20 max-[720px]:gap-[78px]",
   contactIntro: "[&_h2]:m-0 [&_h2]:max-w-[595px] [&_h2]:text-[39px] [&_h2]:font-[390] [&_h2]:leading-[1.44] [&_h2]:tracking-[-1.3px] [&>a]:mt-[39px] [&>a]:inline-block [&>a]:text-[21px] [&>a]:font-[650] hover:[&>a]:text-[#bf1217] focus-visible:[&>a]:text-[#bf1217] max-[980px]:[&_h2]:max-w-[760px] max-[720px]:[&_h2]:text-[31px] max-[720px]:[&_h2]:leading-[1.48] max-[720px]:[&>a]:mt-[30px] max-[720px]:[&>a]:text-[18px]",
@@ -171,51 +183,6 @@ export type PujaWayHomeProps = {
 
 function formatRegion(region: FeaturedRegion) {
   return region.charAt(0) + region.slice(1).toLowerCase();
-}
-
-function LiveCard({
-  icon: Icon,
-  title,
-  value,
-  suffix,
-  busy,
-  chart,
-}: {
-  icon: typeof UsersRound;
-  title: string;
-  value: string;
-  suffix?: string;
-  busy?: boolean;
-  chart?: boolean;
-}) {
-  return (
-    <article className={styles.liveCard}>
-      <div className={styles.liveCardTop}>
-        <span className={styles.liveIcon}>
-          <Icon aria-hidden="true" />
-        </span>
-        <span>Guide</span>
-      </div>
-      <h3>{title}</h3>
-      <span className={styles.shortRule} />
-      <p className={styles.liveValue}>{value}</p>
-      {suffix && <p className={styles.liveSuffix}>{suffix}</p>}
-      {busy && (
-        <span className={styles.busyBadge}>
-          <span /> Very Busy
-        </span>
-      )}
-      {chart && (
-        <span className={styles.sparkline} role="img" aria-label="Activity is rising">
-          <i className={`${styles.sparklineLine} bottom-2.5 left-0 w-[26px] rotate-[-10deg]`} />
-          <i className={`${styles.sparklineLine} bottom-3.5 left-6 w-[30px] rotate-[-34deg]`} />
-          <i className={`${styles.sparklineLine} bottom-[31px] left-12 w-9 rotate-[7deg]`} />
-          <i className={`${styles.sparklineLine} bottom-[27px] left-[83px] w-[33px] rotate-[-51deg]`} />
-          <b className={styles.sparklineDot} />
-        </span>
-      )}
-    </article>
-  );
 }
 
 function FeaturedCarouselCard({
@@ -358,9 +325,19 @@ export function PujaWayHome({
     document.documentElement.style.overflow = "hidden";
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      setIntroVisible(false);
-      document.documentElement.style.overflow = previousRootOverflowRef.current;
-      return;
+      introSafetyTimerRef.current = window.setTimeout(() => {
+        setIntroVisible(false);
+        document.documentElement.style.overflow = previousRootOverflowRef.current;
+        introSafetyTimerRef.current = null;
+      }, 0);
+
+      return () => {
+        if (introSafetyTimerRef.current !== null) {
+          window.clearTimeout(introSafetyTimerRef.current);
+          introSafetyTimerRef.current = null;
+        }
+        document.documentElement.style.overflow = previousRootOverflowRef.current;
+      };
     }
 
     introSafetyTimerRef.current = window.setTimeout(() => {
@@ -586,61 +563,33 @@ export function PujaWayHome({
           </div>
         </section>
 
+        <section className={styles.marqueeSection} aria-label="Puja discovery highlights">
+          <div className={`${styles.marqueeEdge} ${styles.marqueeEdgeTop}`} aria-hidden="true" />
+          <div className={styles.marqueeBand}>
+            <div className={styles.marqueeTrack} data-pujaway-marquee-track>
+              <span>Discover the Best Puja Pandals Near You * Find Popular & Recommended Pujas * Make This Puja Unforgettable *</span>
+              <span aria-hidden="true">Discover the Best Puja Pandals Near You * Find Popular & Recommended Pujas * Make This Puja Unforgettable *</span>
+              <span aria-hidden="true">Discover the Best Puja Pandals Near You * Find Popular & Recommended Pujas * Make This Puja Unforgettable *</span>
+              <span aria-hidden="true">Discover the Best Puja Pandals Near You * Find Popular & Recommended Pujas * Make This Puja Unforgettable *</span>
+            </div>
+          </div>
+          <div className={`${styles.marqueeEdge} ${styles.marqueeEdgeBottom}`} aria-hidden="true" />
+        </section>
+
         <section className={styles.promoBanner} aria-labelledby="promo-title">
           <Image
-            src="/images/pujaway/hero.jpg"
+            src="/images/durga_ma.jpg"
             alt="Close portrait of Maa Durga"
             fill
             sizes="100vw"
             className={styles.bannerImage}
           />
           <div className={styles.bannerVeil} />
-          <div className={styles.bannerCopy}>
-          <PujaWayBrand className={styles.bannerBrand} />
-            <p className={styles.bannerKicker} lang="bn">
-              পুজো হোক
-            </p>
-            <h2 id="promo-title" className={styles.bannerTitle} lang="bn">
-              নিজের
-              <br />
-              মতো
-            </h2>
-            <p className={styles.bannerText} lang="bn">উত্তর থেকে দক্ষিণ — প্রতিটি অঞ্চলে লুকিয়ে আছে এক একটি পুজোর গল্প</p>
-          </div>
-          <span className={styles.pujaStamp} lang="bn" aria-hidden="true">
-            পুজো
-          </span>
+         
+         
         </section>
 
-        <section className={styles.liveSection} id="live" aria-labelledby="live-title">
-          <div className={styles.container}>
-            <p className={styles.liveNow}>
-              <span /> EDITORIAL GUIDE
-            </p>
-            <h2 id="live-title" className={styles.liveTitle}>Around Kolkata</h2>
-            <p className={styles.liveLead}>Curated planning highlights; local conditions can change.</p>
-            <div className={styles.liveGrid}>
-              <LiveCard
-                icon={UsersRound}
-                title="Plan Your Visit"
-                value="Explore"
-                suffix="Pujas by area"
-              />
-              <LiveCard
-                icon={Flame}
-                title="Featured Puja"
-                value="Santosh Mitra Square"
-              />
-              <LiveCard icon={MapPin} title="Featured Area" value="North Kolkata" />
-              <LiveCard
-                icon={Utensils}
-                title="Food Nearby"
-                value="Browse"
-                suffix="Food stops"
-              />
-            </div>
-          </div>
-        </section>
+        <DurgaPujaDays />
 
         <section className={styles.introVideoSection} aria-labelledby="intro-video-title">
           <div className={styles.container}>
@@ -666,10 +615,12 @@ export function PujaWayHome({
           </div>
         </section>
 
+        <LiveAroundKolkata />
+
         <section className={styles.storySection} id="story" aria-labelledby="story-title">
           <div className={`${styles.container} ${styles.storyGrid}`}>
             <div className={styles.storyCopy}>
-              <p className={styles.sectionLabel}>Our Story</p>
+              <p className={styles.storyLabel}>Our Story</p>
               <h2 id="story-title">
                 <strong>PujaWay</strong> is a digital experience <strong>created by CodeFair</strong> to
                 help people discover, navigate and experience Kolkata&apos;s Puja in a smarter way.
@@ -684,7 +635,7 @@ export function PujaWayHome({
 
             <article className={styles.storyVisual}>
               <Image
-                src="/images/pujaway/story.jpg"
+                src="/images/our_story_image.png"
                 alt="A Durga Puja celebration reflected on water at night"
                 fill
                 sizes="(max-width: 900px) 92vw, 560px"
@@ -699,7 +650,15 @@ export function PujaWayHome({
                 <p>May Ma Durga bless you and your family with happiness, peace and prosperity.</p>
                 <b>PujaWay From<br />CodeFair</b>
               </div>
-              <p className={styles.poweredBy}>Powered By <strong>CodeFair</strong></p>
+              <div className={styles.poweredBy}>
+                <span>Powered By</span>
+                <Image
+                  src="/images/Asset 4@10x.png"
+                  alt="CodeFair"
+                  width={150}
+                  height={38}
+                />
+              </div>
             </article>
           </div>
         </section>
@@ -714,7 +673,7 @@ export function PujaWayHome({
               <a href="mailto:infocodefair@gmail.com">infocodefair@gmail.com</a>
               <div className={styles.contactImageWrap}>
                 <Image
-                  src="/images/pujaway/contact.jpg"
+                  src="/images/pujaway/sayhi.png"
                   alt="A visitor using PujaWay during Durga Puja"
                   fill
                   sizes="(max-width: 900px) 92vw, 560px"

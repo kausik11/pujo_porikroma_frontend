@@ -13,7 +13,9 @@ export type PujaWayHeaderProps = {
 };
 
 const navLinkClassName =
-  "relative py-3.5 font-(family-name:--font-space-grotesk) text-[20px] font-normal leading-none text-center tracking-[0] after:absolute after:inset-x-0 after:bottom-[7px] after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-200 hover:after:origin-left hover:after:scale-x-100 focus-visible:after:origin-left focus-visible:after:scale-x-100";
+  "group inline-flex items-center gap-2 py-3.5 font-(family-name:--font-space-grotesk) text-[20px] font-normal leading-none text-center tracking-[0]";
+const navLinkLabelClassName =
+  "relative after:absolute after:inset-x-0 after:bottom-[-7px] after:h-px after:origin-right after:scale-x-0 after:bg-current after:transition-transform after:duration-200 group-hover:after:origin-left group-hover:after:scale-x-100 group-focus-visible:after:origin-left group-focus-visible:after:scale-x-100";
 const activeNavLinkClassName = "after:origin-left after:scale-x-100";
 const searchFormClassName =
   "ml-auto grid h-11 w-[313px] grid-cols-[20px_minmax(0,1fr)_34px] items-center overflow-hidden rounded-[9px] bg-linear-to-b from-[#8B1E1E] to-[#500000] pl-[15px] text-[#FFE9AD]";
@@ -113,10 +115,12 @@ export function PujaWayHeader({ className, skipToId = "main-content" }: PujaWayH
                 <Link
                   key={item.label}
                   href={item.href}
-                  className={`${navLinkClassName} ${active ? activeNavLinkClassName : ""}`}
+                  className={navLinkClassName}
                   aria-current={active ? (item.href.includes("#") ? "location" : "page") : undefined}
                 >
-                  {item.label}
+                  <span className={`${navLinkLabelClassName} ${active ? activeNavLinkClassName : ""}`}>
+                    {item.label}
+                  </span>
                 </Link>
               );
             })}
