@@ -25,6 +25,24 @@
   font-family: var(--font-bengali-sans), sans-serif;
 }
 
+.loadIntro {
+  position: fixed;
+  z-index: 1000;
+  display: grid;
+  overflow: hidden;
+  background: #fdf9e8;
+  place-items: center;
+  inset: 0;
+}
+
+.loadIntroVideo {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center;
+}
+
 .skipLink {
   position: fixed;
   top: 12px;

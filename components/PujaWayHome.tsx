@@ -10,7 +10,14 @@ import {
   Utensils,
   UsersRound,
 } from "lucide-react";
-import { type FormEvent, useState, useTransition } from "react";
+import {
+  type FormEvent,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useTransition,
+} from "react";
 import styles from "@/app/pujaway.module.css";
 import { PujaCard, type PujaCardData } from "@/components/pujaway/PujaCard";
 import { PujaWayBrand } from "@/components/pujaway/PujaWayBrand";
@@ -80,10 +87,53 @@ export function PujaWayHome({
   featuredLoadFailed = false,
 }: PujaWayHomeProps) {
   const router = useRouter();
+  const [introVisible, setIntroVisible] = useState(true);
   const [region, setRegion] = useState<FeaturedRegion>("SOUTH");
   const [messageSent, setMessageSent] = useState(false);
   const [isRefreshingFeatured, startFeaturedRefresh] = useTransition();
+  const introVideoRef = useRef<HTMLVideoElement>(null);
+  const introSafetyTimerRef = useRef<number | null>(null);
+  const previousRootOverflowRef = useRef("");
   const visiblePujas = featuredPujas.filter((puja) => puja.region === region);
+
+  const finishIntro = useCallback(() => {
+    if (introSafetyTimerRef.current !== null) {
+      window.clearTimeout(introSafetyTimerRef.current);
+      introSafetyTimerRef.current = null;
+    }
+    setIntroVisible(false);
+    document.documentElement.style.overflow = previousRootOverflowRef.current;
+  }, []);
+
+  useEffect(() => {
+    previousRootOverflowRef.current = document.documentElement.style.overflow;
+    document.documentElement.style.overflow = "hidden";
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIntroVisible(false);
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
+      return;
+    }
+
+    introSafetyTimerRef.current = window.setTimeout(() => {
+      setIntroVisible(false);
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
+    }, 3_000);
+
+    const introVideo = introVideoRef.current;
+    if (introVideo?.ended) {
+      finishIntro();
+    } else {
+      introVideo?.play().catch(finishIntro);
+    }
+
+    return () => {
+      if (introSafetyTimerRef.current !== null) {
+        window.clearTimeout(introSafetyTimerRef.current);
+      }
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
+    };
+  }, [finishIntro]);
 
   function retryFeaturedPujas() {
     startFeaturedRefresh(() => router.refresh());
@@ -103,6 +153,28 @@ export function PujaWayHome({
 
   return (
     <div className={styles.page}>
+      {introVisible ? (
+        <div
+          className={styles.loadIntro}
+          aria-hidden="true"
+          data-pujaway-intro="playing"
+        >
+          <video
+            ref={introVideoRef}
+            className={styles.loadIntroVideo}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            onEnded={finishIntro}
+            onError={finishIntro}
+          >
+            <source src="/video/pujaway-load-intro.mp4" type="video/mp4" />
+          </video>
+        </div>
+      ) : null}
+
       <PujaWayHeader />
 
       <main id="main-content" tabIndex={-1}>
