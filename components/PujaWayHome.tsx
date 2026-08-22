@@ -67,13 +67,9 @@ const styles = {
   page: "min-h-screen overflow-x-hidden bg-[#fff7e7] text-[#171612] font-(family-name:--font-geist-sans) [box-sizing:border-box] [&_a]:text-inherit [&_a]:no-underline",
   container: "mx-auto w-[min(calc(100%_-_48px),1230px)] max-[720px]:w-[min(calc(100%_-_36px),1230px)]",
   srOnly: "sr-only",
-  flashScreen:
-    "fixed inset-0 z-[2147483000] grid h-dvh w-screen place-items-center overflow-hidden bg-[#fff9ed] text-[#beb7a8] pointer-events-none animate-[flash-screen-exit_3.6s_cubic-bezier(0.5,0,0.2,1)_forwards]",
-  flashKalka:
-    "z-[0] object-cover object-center opacity-[0.26] mix-blend-multiply saturate-[0.92] sepia-[0.08] brightness-[1.01] contrast-[1.04] [inset:0!important] [height:100%!important] [width:100%!important]",
-  flashBrand:
-    "relative z-[2] w-[min(70vw,680px)] opacity-0 will-change-[transform,opacity] animate-[flash-brand-drop_4.2s_cubic-bezier(0.16,0.86,0.22,1)_forwards,flash-brand-fade_4.2s_ease-in-out_forwards] max-[720px]:w-[min(78vw,460px)]",
-  flashLogo: "block h-auto w-full",
+  loadIntro:
+    "fixed inset-0 z-[2147483000] grid h-dvh w-screen place-items-center overflow-hidden bg-[#fdf9e8]",
+  loadIntroVideo: "block h-full w-full object-contain object-center",
   hero:
     "relative z-[4] isolate grid h-[716px] place-items-center overflow-hidden text-[#fffaf1] shadow-[0_18px_22px_rgb(9_7_5_/_42%)] after:absolute after:inset-x-0 after:bottom-0 after:z-[-1] after:h-[118px] after:bg-[linear-gradient(180deg,transparent_0%,rgb(8_6_4_/_42%)_54%,rgb(5_4_3_/_82%)_100%)] after:content-[''] max-[980px]:h-[670px] max-[720px]:h-[675px] max-[720px]:place-items-end",
   heroVideo: "absolute inset-0 z-[-3] h-full w-full scale-[1.008] object-cover object-[57%_48%]",
@@ -258,38 +254,13 @@ function FeaturedCarouselCard({
   );
 }
 
-function FlashScreen() {
-  return (
-    <div className={styles.flashScreen} data-pujaway-flash-screen aria-hidden="true">
-      <Image
-        src="/images/Flash_screen_kalka.jpg"
-        alt=""
-        fill
-        sizes="100vw"
-        priority
-        className={styles.flashKalka}
-      />
-      <div className={styles.flashBrand}>
-        <Image
-          src="/images/logo%20black%20pujaway.png"
-          alt="PujaWay - Your Guide To Puja Hopping"
-          width={1468}
-          height={722}
-          priority
-          className={styles.flashLogo}
-        />
-      </div>
-    </div>
-  );
-}
-
 export function PujaWayHome({
   featuredLoadFailed = false,
 }: PujaWayHomeProps) {
   const router = useRouter();
+  const [introVisible, setIntroVisible] = useState(true);
   const [region, setRegion] = useState<FeaturedRegion>("SOUTH");
   const [messageSent, setMessageSent] = useState(false);
-  const [showFlashScreen, setShowFlashScreen] = useState(true);
   const [activeCarouselIndex, setActiveCarouselIndex] = useState(1);
   const [isCarouselDragging, setIsCarouselDragging] = useState(false);
   const carouselViewportRef = useRef<HTMLDivElement | null>(null);
@@ -300,7 +271,19 @@ export function PujaWayHome({
     startScrollLeft: 0,
     startX: 0,
   });
+  const introVideoRef = useRef<HTMLVideoElement>(null);
+  const introSafetyTimerRef = useRef<number | null>(null);
+  const previousRootOverflowRef = useRef("");
   const [isRefreshingFeatured, startFeaturedRefresh] = useTransition();
+
+  const finishIntro = useCallback(() => {
+    if (introSafetyTimerRef.current !== null) {
+      window.clearTimeout(introSafetyTimerRef.current);
+      introSafetyTimerRef.current = null;
+    }
+    setIntroVisible(false);
+    document.documentElement.style.overflow = previousRootOverflowRef.current;
+  }, []);
 
   const normalizeCarouselScroll = useCallback(() => {
     const viewport = carouselViewportRef.current;
@@ -371,23 +354,34 @@ export function PujaWayHome({
   }, [normalizeCarouselScroll]);
 
   useEffect(() => {
-    const previousBodyOverflow = document.body.style.overflow;
-    const previousHtmlOverflow = document.documentElement.style.overflow;
-    document.body.style.overflow = "hidden";
+    previousRootOverflowRef.current = document.documentElement.style.overflow;
     document.documentElement.style.overflow = "hidden";
 
-    const timer = window.setTimeout(() => {
-      setShowFlashScreen(false);
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
-    }, 3600);
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setIntroVisible(false);
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
+      return;
+    }
+
+    introSafetyTimerRef.current = window.setTimeout(() => {
+      setIntroVisible(false);
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
+    }, 3_000);
+
+    const introVideo = introVideoRef.current;
+    if (introVideo?.ended) {
+      finishIntro();
+    } else {
+      introVideo?.play().catch(finishIntro);
+    }
 
     return () => {
-      window.clearTimeout(timer);
-      document.body.style.overflow = previousBodyOverflow;
-      document.documentElement.style.overflow = previousHtmlOverflow;
+      if (introSafetyTimerRef.current !== null) {
+        window.clearTimeout(introSafetyTimerRef.current);
+      }
+      document.documentElement.style.overflow = previousRootOverflowRef.current;
     };
-  }, []);
+  }, [finishIntro]);
 
   function setCarouselCardRef(index: number, node: HTMLElement | null) {
     carouselCardRefs.current[index] = node;
@@ -466,7 +460,23 @@ export function PujaWayHome({
 
   return (
     <div className={styles.page}>
-      {showFlashScreen ? <FlashScreen /> : null}
+      {introVisible ? (
+        <div className={styles.loadIntro} aria-hidden="true" data-pujaway-intro="playing">
+          <video
+            ref={introVideoRef}
+            className={styles.loadIntroVideo}
+            autoPlay
+            muted
+            playsInline
+            preload="auto"
+            disablePictureInPicture
+            onEnded={finishIntro}
+            onError={finishIntro}
+          >
+            <source src="/video/pujaway-load-intro.mp4" type="video/mp4" />
+          </video>
+        </div>
+      ) : null}
       <PujaWayHeader />
 
       <main id="main-content" tabIndex={-1}>
